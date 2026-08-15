@@ -7,11 +7,40 @@ import { renderLatex } from '../renderer.ts';
 import type { FastifyTyped } from '../types.ts';
 
 const querySchema = Type.Object({
-  tex: Type.Optional(Type.String()),
-  format: Type.Optional(Type.Union([Type.Literal('svg'), Type.Literal('png')])),
-  backgroundColor: Type.Optional(Type.String()),
-  resolution: Type.Optional(Type.String()),
+  tex: Type.Optional(
+    Type.String({ description: 'URL-encoded LaTeX formula to render.' }),
+  ),
+  format: Type.Optional(
+    Type.Union([Type.Literal('svg'), Type.Literal('png')], {
+      description: 'Output image format.',
+      default: 'svg',
+    }),
+  ),
+  backgroundColor: Type.Optional(
+    Type.String({
+      description: 'Any CSS color string, painted behind the formula.',
+      default: 'white',
+    }),
+  ),
+  resolution: Type.Optional(
+    Type.String({
+      description: 'Rasterization density in DPI, PNG output only.',
+      default: '150',
+    }),
+  ),
 });
+
+const imageResponses = {
+  // Unsafe because the payload is a binary Buffer for PNG and a string for
+  // SVG; the schema only documents it, Fastify skips serialization for
+  // non-JSON content types.
+  200: Type.Unsafe<unknown>({
+    type: 'string',
+    format: 'binary',
+    description: 'The rendered image.',
+  }),
+  400: Type.String({ description: 'The LaTeX formula could not be parsed.' }),
+};
 
 function injectBackground(svg: string, color: string): string {
   return svg.replace(/<svg(?:\s[^>]*)?>/, (match) => {
@@ -32,7 +61,16 @@ function injectBackground(svg: string, color: string): string {
 export default async function renderRoutes(fastify: FastifyTyped) {
   fastify.get(
     '/',
-    { schema: { querystring: querySchema } },
+    {
+      schema: {
+        tags: ['render'],
+        summary: 'Legacy tex.cheminfo.org entry point',
+        description:
+          'Redirects `?tex=` requests from non-browser clients to /v1/; browsers get the frontend.',
+        querystring: querySchema,
+        response: { 302: Type.Null() },
+      },
+    },
     async (request, reply) => {
       const { tex } = request.query;
       if (!tex) return reply.callNotFound();
@@ -45,7 +83,15 @@ export default async function renderRoutes(fastify: FastifyTyped) {
 
   fastify.get(
     '/v1/',
-    { schema: { querystring: querySchema } },
+    {
+      schema: {
+        tags: ['render'],
+        summary: 'Render a LaTeX formula as an image',
+        querystring: querySchema,
+        response: imageResponses,
+        produces: ['image/svg+xml', 'image/png'],
+      },
+    },
     async (request, reply) => {
       const {
         tex,

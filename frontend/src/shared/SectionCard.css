@@ -1,6 +1,6 @@
 .doc-section {
   border-radius: 8px;
-  border: 1px solid #e8ecf0;
+  border: 1px solid var(--border);
   overflow: hidden;
 }
 
@@ -11,7 +11,7 @@
   letter-spacing: 0.08em;
   color: var(--accent);
   padding: 7px 12px;
-  background: color-mix(in srgb, var(--accent) 7%, #fff);
+  background: color-mix(in srgb, var(--accent) 7%, white);
   border-bottom: 1px solid color-mix(in srgb, var(--accent) 12%, transparent);
 }
 

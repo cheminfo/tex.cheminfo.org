@@ -1,10 +1,12 @@
+# Port-published deployment: PORT is exposed on the host.
+# This is the file docker compose loads when COMPOSE_FILE is unset.
 services:
-  text-to-svg:
-    image: ghcr.io/cheminfo/text-to-svg:latest
+  tex:
+    image: ${IMAGE_NAME:-ghcr.io/cheminfo/tex.cheminfo.org}:${IMAGE_TAG:-latest}
     build: .
     env_file: .env
     ports:
-      - '${PORT:-3043}:${PORT:-3043}'
+      - '${PORT:-10422}:${PORT:-10422}'
     init: true
     read_only: true
     security_opt:

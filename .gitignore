@@ -1,11 +1,11 @@
 node_modules/
-compose.yaml
 coverage/
 dist/
 **/dist/
 *.log
 .env
 .env.local
+.deploy
 .eslintcache
 *.tsbuildinfo
 .DS_Store

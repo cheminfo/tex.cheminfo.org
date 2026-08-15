@@ -1,0 +1,123 @@
+.share-backdrop {
+  width: min(40rem, calc(100vw - 3rem));
+  max-height: 90vh;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--surface-raised);
+  color: var(--text);
+  box-shadow: var(--shadow-lg);
+}
+
+.share-backdrop::backdrop {
+  background: rgb(16 32 48 / 45%);
+}
+
+.share-dialog {
+  overflow-y: auto;
+  max-height: 90vh;
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.share-dialog__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 0.25rem;
+  font-size: 1.125rem;
+  gap: 1rem;
+}
+
+.share-dialog__lead {
+  margin: 0 0 1rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.share-section {
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.share-section__title {
+  margin: 0 0 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.share-option {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.3rem 0;
+  gap: 0.55rem;
+  cursor: pointer;
+}
+
+.share-option input {
+  margin-top: 0.25rem;
+  accent-color: var(--accent);
+}
+
+.share-option__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.share-option__description {
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.share-code {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-sunken);
+  color: var(--text);
+  font-family: 'Fira Mono', 'Cascadia Code', Consolas, monospace;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  resize: vertical;
+  word-break: break-all;
+}
+
+.share-actions {
+  display: flex;
+  margin-top: 0.5rem;
+  gap: 0.5rem;
+}
+
+.share-btn {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.share-btn:hover {
+  background: var(--surface-sunken);
+  color: var(--text);
+}
+
+.share-btn--primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.share-btn--primary:hover {
+  background: var(--accent);
+  color: #fff;
+  filter: brightness(1.08);
+}

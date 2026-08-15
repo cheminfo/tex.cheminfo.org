@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 interface Props {
   tex: string;
-  zoom: 1 | 2 | 3;
+  zoom: number;
 }
 
 function flashCopied(setFlag: (value: boolean) => void): void {
@@ -28,13 +28,17 @@ export function ServerRenderPanel({ tex, zoom }: Props) {
   const copyServerSvg = useCallback(() => {
     if (!tex) return;
     void fetch(`/v1/?tex=${encodeURIComponent(tex)}`)
-      .then((response) => response.blob())
+      .then((response) => {
+        if (!response.ok) throw new Error(`render failed: ${response.status}`);
+        return response.blob();
+      })
       .then((blob) =>
         navigator.clipboard.write([
           new ClipboardItem({ 'image/svg+xml': blob }),
         ]),
       )
-      .then(() => flashCopied(setCopiedSvg));
+      .then(() => flashCopied(setCopiedSvg))
+      .catch(() => setCopiedSvg(false));
   }, [tex]);
 
   const copyServerPng = useCallback(
@@ -43,11 +47,17 @@ export function ServerRenderPanel({ tex, zoom }: Props) {
       void fetch(
         `/v1/?tex=${encodeURIComponent(tex)}&format=png&resolution=${dpi}`,
       )
-        .then((response) => response.blob())
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`render failed: ${response.status}`);
+          }
+          return response.blob();
+        })
         .then((blob) =>
           navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]),
         )
-        .then(() => flashCopied(setFlag));
+        .then(() => flashCopied(setFlag))
+        .catch(() => setFlag(false));
     },
     [tex],
   );

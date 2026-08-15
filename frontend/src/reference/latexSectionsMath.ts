@@ -18,7 +18,7 @@ export const SECTIONS_MATH: DocSection[] = [
         label: 'Auto-sized brackets',
       },
       {
-        tex: String.raw`a^2 - b^2 = (a+b)(a-b)`,
+        tex: 'a^2 - b^2 = (a+b)(a-b)',
         label: 'Difference of squares',
       },
       { tex: String.raw`\sqrt[n]{x} = x^{1/n}`, label: 'nth root' },

@@ -1,6 +1,7 @@
 node_modules/
 dist/
 CHANGELOG.md
+coverage/
 backend/coverage/
 backend/lib/
 frontend/playwright-report/

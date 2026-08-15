@@ -28,10 +28,10 @@ COPY backend ./backend
 
 COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
-EXPOSE 3043
+EXPOSE 10422
 
 ENV NODE_ENV=production
-ENV PORT=3043
+ENV PORT=10422
 
 WORKDIR /app/backend
-CMD ["node", "--experimental-strip-types", "src/server.ts"]
+CMD ["node", "src/server.ts"]

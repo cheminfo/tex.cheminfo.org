@@ -30,7 +30,7 @@ test('embed code shows HTML img tag', async ({ page }) => {
     .first()
     .locator('.code-output');
   await expect(htmlTextarea).toHaveValue(
-    new RegExp(`<img src="${BASE_URL}/v1/\\?tex=`),
+    new RegExp(String.raw`<img src="${BASE_URL}/v1/\?tex=`),
   );
 });
 
@@ -41,7 +41,7 @@ test('embed code shows Markdown image syntax', async ({ page }) => {
 
   const mdTextarea = page.locator('.code-row').nth(1).locator('.code-output');
   await expect(mdTextarea).toHaveValue(
-    new RegExp(`!\\[formula\\]\\(${BASE_URL}/v1/\\?tex=`),
+    new RegExp(String.raw`!\[formula\]\(${BASE_URL}/v1/\?tex=`),
   );
 });
 

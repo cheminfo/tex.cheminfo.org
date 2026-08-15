@@ -1,0 +1,80 @@
+.app-header {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.app-header__inner {
+  display: flex;
+  height: var(--header-height);
+  max-width: var(--page-max);
+  align-items: center;
+  padding: 0 1.25rem;
+  margin: 0 auto;
+  gap: 1rem;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  color: var(--text);
+  font-weight: 700;
+  gap: 0.55rem;
+  text-decoration: none;
+}
+
+.wordmark {
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.wordmark__lead {
+  color: var(--brand);
+}
+
+.wordmark__dot {
+  color: var(--text-faint);
+}
+
+.wordmark__alt {
+  color: var(--brand-alt-text);
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.7rem;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  gap: 0.4rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nav-link:hover {
+  background: var(--surface-sunken);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.nav-link--active {
+  background: color-mix(in oklab, var(--accent) 12%, white);
+  color: var(--accent);
+}
+
+.nav-link svg {
+  width: 14px;
+  height: 14px;
+}

@@ -4,8 +4,8 @@
   gap: 10px;
   padding: 7px 12px;
   border: none;
-  border-bottom: 1px solid #f4f6f8;
-  background: #fff;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
   cursor: pointer;
   text-align: left;
   transition: background 0.1s;
@@ -17,7 +17,7 @@
 }
 
 .cmd-row:hover {
-  background: color-mix(in srgb, var(--accent) 5%, #fff);
+  background: color-mix(in srgb, var(--accent) 5%, white);
 }
 
 .cmd-row-left {
@@ -47,7 +47,7 @@
 .cmd-syntax {
   font-family: 'Fira Mono', 'Cascadia Code', 'Consolas', monospace;
   font-size: 10px;
-  color: #aaa;
+  color: var(--text-faint);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -55,7 +55,7 @@
 
 .cmd-info {
   font-size: 10px;
-  color: #888;
+  color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

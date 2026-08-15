@@ -1,0 +1,39 @@
+# Traefik deployment — requires an external Docker network named "traefik"
+# with a websecure entrypoint and a letsencrypt cert resolver. No port is
+# published; Traefik routes on the shared network.
+#
+# Select via COMPOSE_FILE=compose.traefik.yaml in .env, then: docker compose up -d
+services:
+  tex:
+    image: ${IMAGE_NAME:-ghcr.io/cheminfo/tex.cheminfo.org}:${IMAGE_TAG:-latest}
+    build: .
+    env_file: .env
+    networks:
+      - traefik
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.docker.network=traefik'
+      - 'traefik.http.routers.tex.rule=Host(`tex.cheminfo.org`)'
+      - 'traefik.http.routers.tex.entrypoints=websecure'
+      - 'traefik.http.routers.tex.tls.certresolver=letsencrypt'
+      - 'traefik.http.services.tex.loadbalancer.server.port=${PORT:-10422}'
+    init: true
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    mem_limit: 1g
+    cpus: 2
+    pids_limit: 256
+    ulimits:
+      core: 0
+    logging:
+      options:
+        max-size: '10m'
+        max-file: '3'
+    restart: unless-stopped
+
+networks:
+  traefik:
+    external: true

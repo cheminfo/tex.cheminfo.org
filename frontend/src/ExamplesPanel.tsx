@@ -11,11 +11,17 @@ export function ExamplesPanel({ onSelect }: Props) {
       <p className="docs-hint">Click any formula to load it in the editor.</p>
       <table className="examples-table">
         <tbody>
-          {DEFAULT_EXAMPLES.map((formula, index) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <tr key={index} onClick={() => onSelect(formula)}>
+          {DEFAULT_EXAMPLES.map((formula) => (
+            <tr key={formula}>
               <td className="formula-cell">
-                <MathJaxRenderer tex={formula} displayMode={false} />
+                <button
+                  type="button"
+                  className="example-btn"
+                  title={formula}
+                  onClick={() => onSelect(formula)}
+                >
+                  <MathJaxRenderer tex={formula} displayMode={false} />
+                </button>
               </td>
             </tr>
           ))}

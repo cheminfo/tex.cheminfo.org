@@ -5,8 +5,8 @@
   gap: 10px;
   padding: 8px 12px;
   border: none;
-  border-bottom: 1px solid #f4f6f8;
-  background: #fff;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
   cursor: pointer;
   text-align: left;
   transition: background 0.1s;
@@ -18,7 +18,7 @@
 }
 
 .doc-row:hover {
-  background: color-mix(in srgb, var(--accent) 5%, #fff);
+  background: color-mix(in srgb, var(--accent) 5%, white);
 }
 
 .doc-row-left {
@@ -32,7 +32,7 @@
 .doc-label {
   font-size: 10px;
   font-weight: 600;
-  color: #aaa;
+  color: var(--text-faint);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   white-space: nowrap;
@@ -43,7 +43,7 @@
 .doc-code {
   font-family: 'Fira Mono', 'Cascadia Code', 'Consolas', monospace;
   font-size: 10.5px;
-  color: #555;
+  color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -65,7 +65,7 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 2px;
   padding: 8px;
-  background: #fff;
+  background: var(--surface);
 }
 
 .greek-cell {
@@ -83,12 +83,12 @@
 }
 
 .greek-cell:hover {
-  background: color-mix(in srgb, var(--accent) 10%, #fff);
+  background: color-mix(in srgb, var(--accent) 10%, white);
 }
 
 .greek-name {
   font-family: 'Fira Mono', 'Cascadia Code', 'Consolas', monospace;
   font-size: 9px;
-  color: #bbb;
+  color: var(--text-faint);
   letter-spacing: 0.02em;
 }
