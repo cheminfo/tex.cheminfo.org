@@ -64,7 +64,7 @@ export function ServerRenderPanel({ tex, zoom }: Props) {
 
   return (
     <div className="section section-server-preview">
-      <div className="section-label-row">
+      <div className="section-head">
         <span className="section-label">Server render</span>
         <div className="icon-btns">
           <button
@@ -96,12 +96,14 @@ export function ServerRenderPanel({ tex, zoom }: Props) {
           </button>
         </div>
       </div>
-      <div className="server-preview">
-        {serverImgSrc ? (
-          <img src={serverImgSrc} alt="Server render" style={{ zoom }} />
-        ) : (
-          <span className="placeholder">Server preview will appear here</span>
-        )}
+      <div className="section-body">
+        <div className="server-preview">
+          {serverImgSrc ? (
+            <img src={serverImgSrc} alt="Server render" style={{ zoom }} />
+          ) : (
+            <span className="placeholder">Server preview will appear here</span>
+          )}
+        </div>
       </div>
     </div>
   );

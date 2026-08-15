@@ -1,0 +1,73 @@
+.step-description {
+  margin: 0 0 14px;
+  color: var(--text);
+  font-size: 14.5px;
+  line-height: 1.65;
+}
+
+/* ── Glossary terms ──────────────────────────────────────── */
+.glossary-term {
+  position: relative;
+  border-bottom: 2px dotted var(--brand-alt-text);
+  color: var(--brand-alt-text);
+  cursor: help;
+  font-weight: 600;
+}
+
+.glossary-card {
+  position: absolute;
+  z-index: 40;
+  bottom: calc(100% + 8px);
+  left: 0;
+  display: none;
+  width: 320px;
+  flex-direction: column;
+  padding: 12px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+  color: var(--text);
+  cursor: auto;
+  font-size: 13px;
+  font-weight: 400;
+  gap: 8px;
+  line-height: 1.5;
+}
+
+.glossary-term:hover .glossary-card,
+.glossary-term:focus .glossary-card,
+.glossary-term:focus-within .glossary-card {
+  display: flex;
+}
+
+.glossary-title {
+  color: var(--brand);
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.glossary-summary {
+  color: var(--text);
+}
+
+.glossary-example {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  gap: 8px;
+}
+
+.glossary-example code {
+  color: var(--text-muted);
+  font-family: 'Fira Mono', 'Cascadia Code', Consolas, monospace;
+  font-size: 12px;
+}
+
+.glossary-example i {
+  width: 100%;
+  color: var(--text-muted);
+  font-size: 12px;
+}

@@ -1,28 +1,33 @@
 /* ── Layout ─────────────────────────────────────────────── */
 .layout {
+  position: relative;
   display: flex;
+  width: 100%;
+  max-width: var(--page-max);
   overflow: hidden;
   flex: 1;
+  margin: 0 auto;
   min-height: 0;
   gap: 0;
+  border-inline: 1px solid var(--border);
 }
 
 .panel {
   display: flex;
   overflow: hidden;
   flex-direction: column;
-  border-right: 1px solid var(--border);
-}
-
-.panel:last-child {
-  border-right: none;
 }
 
 .panel-middle {
+  display: flex;
   overflow-y: auto;
   flex: 1;
+  flex-direction: column;
+  padding: 14px;
+  border-right: 1px solid var(--border-strong);
+  background: var(--surface-sunken);
+  gap: 14px;
   min-width: 0;
-  background: var(--surface);
 }
 
 .panel-right {
@@ -39,44 +44,131 @@
   min-height: 0;
 }
 
+/* The panel is a column beside the page; below the breakpoint it becomes a
+   drawer opened by .panel-toggle, so both are hidden while it is a column. */
+.panel-toggle,
+.panel-backdrop,
+.panel-close {
+  display: none;
+}
+
+@media (width <= 60rem) {
+  .panel-middle {
+    border-right: none;
+  }
+
+  .panel-right {
+    position: absolute;
+    z-index: 30;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(420px, 88%);
+    border-left: 1px solid var(--border-strong);
+    box-shadow: var(--shadow-lg);
+    transform: translateX(100%);
+    transition: transform 0.2s ease;
+  }
+
+  .panel-right--open {
+    transform: none;
+  }
+
+  .panel-backdrop {
+    position: absolute;
+    z-index: 25;
+    display: block;
+    border: none;
+    background: rgb(16 32 48 / 30%);
+    cursor: pointer;
+    inset: 0;
+  }
+
+  .panel-toggle {
+    position: absolute;
+    z-index: 20;
+    right: 14px;
+    bottom: 14px;
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: var(--shadow-md);
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    gap: 7px;
+  }
+
+  .panel-toggle svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .panel-close {
+    display: inline-flex;
+    width: 34px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    margin-left: auto;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .panel-close:hover {
+    color: var(--text);
+  }
+}
+
 /* ── Tabs ─────────────────────────────────────────────────── */
 .tab-bar {
   display: flex;
   flex-shrink: 0;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-strong);
   background: var(--surface-sunken);
 }
 
 .tab-btn {
-  padding: 10px 18px;
+  padding: 11px 18px;
   border: none;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   transition:
     color 0.15s,
+    background 0.15s,
     border-color 0.15s;
 }
 
 .tab-btn:hover {
+  background: var(--surface);
   color: var(--text);
 }
 
 .tab-btn.active {
   border-bottom-color: var(--accent);
+  background: var(--surface);
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 /* ── Examples table ──────────────────────────────────────── */
 .examples-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .examples-table tbody tr {
@@ -86,7 +178,7 @@
 }
 
 .examples-table tbody tr:hover {
-  background: var(--surface-sunken);
+  background: color-mix(in srgb, var(--accent) 7%, white);
 }
 
 .formula-cell {
@@ -99,7 +191,7 @@
   display: block;
   overflow: hidden;
   width: 100%;
-  padding: 8px 10px;
+  padding: 9px 12px;
   border: none;
   background: none;
   color: inherit;
@@ -107,73 +199,80 @@
   text-align: left;
 }
 
-/* ── Sections ─────────────────────────────────────────────── */
+/* ── Sections: a card, a header bar, a body ──────────────── */
 .section {
-  padding: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  padding: 9px 14px;
   border-bottom: 1px solid var(--border);
+  background: var(--surface-sunken);
+  gap: 10px;
+}
+
+.section-body {
+  padding: 14px;
 }
 
 .section-label {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.section-label-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  gap: 8px;
-}
-
-.section-label-row .section-label {
+.section-note {
   flex: 1;
-  margin-bottom: 0;
+  color: var(--text-muted);
+  font-size: 12px;
 }
 
 .inline-code {
-  padding: 1px 4px;
-  border-radius: 3px;
-  background: var(--surface-sunken);
-  color: var(--text-muted);
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
   font-family: 'Fira Mono', 'Cascadia Code', Consolas, monospace;
-  font-size: 11px;
+  font-size: 11.5px;
 }
 
 /* ── Editor ──────────────────────────────────────────────── */
-.section-editor {
-  flex: 0 0 auto;
-}
-
 .latex-editor {
   width: 100%;
 }
 
-/* ── Live preview ────────────────────────────────────────── */
-.section-preview {
-  min-height: 80px;
-}
-
-.live-preview {
+/* ── Wells: what a formula renders to ────────────────────── */
+.live-preview,
+.server-preview {
   display: flex;
-  overflow-x: auto;
-  min-height: 60px;
+  overflow: auto;
+  min-height: 72px;
   align-items: center;
   justify-content: center;
-  padding: 12px;
-  border: 1px solid var(--border);
+  padding: 14px;
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius);
   background: var(--surface-sunken);
 }
 
+.section-preview,
+.section-server-preview {
+  flex-shrink: 0;
+}
+
 .placeholder {
-  color: var(--text-faint);
-  font-size: 12px;
+  color: var(--text-muted);
+  font-size: 13px;
   font-style: italic;
 }
 
@@ -185,15 +284,15 @@
 }
 
 .code-row + .code-row {
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .code-format-label {
-  width: 28px;
+  width: 30px;
   flex-shrink: 0;
   padding-top: 10px;
-  color: var(--text-faint);
-  font-size: 10px;
+  color: var(--text-muted);
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.04em;
   text-align: right;
@@ -204,12 +303,12 @@
   height: 54px;
   flex: 1;
   padding: 8px 10px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius);
   background: var(--surface-sunken);
-  color: var(--text-muted);
+  color: var(--text);
   font-family: 'Fira Mono', 'Cascadia Code', Consolas, monospace;
-  font-size: 11.5px;
+  font-size: 12px;
   resize: none;
 }
 
@@ -220,10 +319,10 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius);
   background: var(--surface);
-  color: var(--text-muted);
+  color: var(--text);
   cursor: pointer;
   font-size: 17px;
   transition:
@@ -233,19 +332,19 @@
 
 .copy-btn:hover {
   background: var(--surface-sunken);
-  color: var(--text);
+  color: var(--accent);
 }
 
 .copy-btn.copied {
   border-color: var(--success);
-  background: color-mix(in oklab, var(--success) 14%, white);
+  background: color-mix(in oklab, var(--success) 16%, white);
   color: var(--success);
 }
 
 .guide-link {
   color: var(--accent);
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   text-decoration: none;
 }
 
@@ -253,44 +352,27 @@
   text-decoration: underline;
 }
 
-/* ── Server preview ──────────────────────────────────────── */
-.section-server-preview {
-  flex: 1;
-}
-
-.server-preview {
-  display: flex;
-  overflow: auto;
-  min-height: 120px;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-sunken);
-}
-
 /* ── Help panel ──────────────────────────────────────────── */
 .help-panel {
   padding: 16px;
-  color: var(--text-muted);
-  font-size: 13px;
+  color: var(--text);
+  font-size: 13.5px;
   line-height: 1.65;
 }
 
 .help-title {
   margin: 0 0 12px;
   color: var(--text);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
 }
 
 .help-subtitle {
-  margin: 16px 0 6px;
-  color: var(--text-muted);
+  margin: 18px 0 6px;
+  color: var(--brand-alt-text);
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
@@ -298,20 +380,23 @@
   margin: 0 0 10px;
 }
 
-/* ── Zoom controls ───────────────────────────────────────── */
-.zoom-btns {
+/* ── Small buttons: zoom, formats ────────────────────────── */
+.zoom-btns,
+.icon-btns {
   display: flex;
-  gap: 2px;
+  flex-shrink: 0;
+  gap: 4px;
 }
 
-.zoom-btn {
-  padding: 2px 7px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
+.zoom-btn,
+.icon-btn {
+  padding: 4px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
   background: var(--surface);
-  color: var(--text-muted);
+  color: var(--text);
   cursor: pointer;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   transition:
     background 0.12s,
@@ -319,8 +404,11 @@
     border-color 0.12s;
 }
 
-.zoom-btn:hover {
-  background: var(--surface-sunken);
+.zoom-btn:hover,
+.icon-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 8%, white);
+  color: var(--accent);
 }
 
 .zoom-btn.active {
@@ -329,41 +417,15 @@
   color: #fff;
 }
 
-/* ── Icon buttons (SVG / PNG) ────────────────────────────── */
-.icon-btns {
-  display: flex;
-  flex-shrink: 0;
-  gap: 6px;
-}
-
-.icon-btn {
-  padding: 4px 10px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  background: var(--surface);
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 11px;
-  font-weight: 600;
-  transition:
-    background 0.15s,
-    color 0.15s,
-    border-color 0.15s;
-}
-
-.icon-btn:hover:not(:disabled) {
-  background: var(--surface-sunken);
-  color: var(--text);
-}
-
 .icon-btn:disabled {
+  border-color: var(--border);
+  color: var(--text-faint);
   cursor: default;
-  opacity: 0.4;
 }
 
 .icon-btn.copied {
   border-color: var(--success);
-  background: color-mix(in oklab, var(--success) 14%, white);
+  background: color-mix(in oklab, var(--success) 16%, white);
   color: var(--success);
   cursor: default;
 }

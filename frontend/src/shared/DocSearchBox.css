@@ -7,8 +7,8 @@
 
 .docs-hint {
   margin: 0;
-  font-size: 11px;
-  color: var(--text-faint);
+  font-size: 12.5px;
+  color: var(--text-muted);
   text-align: center;
   letter-spacing: 0.02em;
 }
@@ -26,9 +26,9 @@
   width: 100%;
   box-sizing: border-box;
   padding: 7px 10px 7px 30px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 13px;
   background: var(--surface)
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23aab' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E")
     no-repeat 9px center;
@@ -50,7 +50,7 @@
 
 .docs-no-results {
   margin: 16px 0;
-  font-size: 12px;
-  color: var(--text-faint);
+  font-size: 13px;
+  color: var(--text-muted);
   text-align: center;
 }

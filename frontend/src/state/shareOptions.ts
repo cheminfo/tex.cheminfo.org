@@ -42,6 +42,18 @@ export const SHARE_FEATURES: readonly ShareFeatureOption[] = [
     hiddenByDefault: true,
   },
   {
+    key: 'exerciseList',
+    label: 'Exercise list',
+    description:
+      'The series and their numbered exercises. Hiding it embeds exactly the exercise the link names.',
+  },
+  {
+    key: 'tutorialSteps',
+    label: 'Tutorial steps',
+    description:
+      'The strips of numbered steps. Hiding them embeds exactly the step the link names.',
+  },
+  {
     key: 'serverRender',
     label: 'Server render',
     description:

@@ -1,30 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useSignals } from '@preact/signals-react/runtime';
 
 import './App.css';
-import { ServerRenderPanel } from './ServerRenderPanel.tsx';
+import './learn.css';
 import { AppShell } from './components/AppShell.tsx';
-import { EmbedCode } from './components/EmbedCode.tsx';
 import { ShareDialog } from './components/ShareDialog.tsx';
-import { SidePanel } from './components/SidePanel.tsx';
-import { LatexEditor } from './editor/LatexEditor.tsx';
-import { MathJaxRenderer } from './shared/MathJaxRenderer.tsx';
+import { EditorPage } from './editor/EditorPage.tsx';
+import { ExercisesPage } from './exercises/ExercisesPage.tsx';
+import { closeShare, state } from './state/index.ts';
 import type { ShareConfig } from './state/shareConfig.ts';
-import {
-  MAX_ZOOM,
-  MIN_ZOOM,
-  isHidden,
-  parseShareConfig,
-} from './state/shareConfig.ts';
 import { DEFAULT_EMBED_HIDDEN } from './state/shareOptions.ts';
-
-const ZOOM_LEVELS = Array.from(
-  { length: MAX_ZOOM - MIN_ZOOM + 1 },
-  (_, index) => MIN_ZOOM + index,
-);
-
-function getTexFromUrl(): string {
-  return new URLSearchParams(window.location.search).get('tex') ?? '';
-}
+import { TutorialPage } from './tutorial/TutorialPage.tsx';
 
 /**
  * Open the dialog on the link the user would hand out: embedded, with the
@@ -39,75 +24,21 @@ function draftFrom(config: ShareConfig): ShareConfig {
 }
 
 export default function App() {
-  const [config] = useState(() => parseShareConfig(window.location.search));
-  const [tex, setTex] = useState<string>(getTexFromUrl);
-  const [zoom, setZoom] = useState<number>(config.zoom);
-  const [sharing, setSharing] = useState(false);
-
-  useEffect(() => {
-    const url = new URL(window.location.href);
-    if (tex) {
-      url.searchParams.set('tex', tex);
-    } else {
-      url.searchParams.delete('tex');
-    }
-    window.history.replaceState(null, '', url.toString());
-  }, [tex]);
+  useSignals();
+  const { page } = state.view.route.value;
+  const config = state.view.config.value;
 
   return (
-    <AppShell embed={config.embed} onShare={() => setSharing(true)}>
-      <div className="layout">
-        <main className="panel panel-middle">
-          <div className="section section-editor">
-            <span className="section-label">
-              LaTeX formula — edit directly or paste a{' '}
-              <code className="inline-code">?tex=</code> URL
-            </span>
-            <LatexEditor value={tex} onChange={setTex} onPasteUrl={setTex} />
-          </div>
+    <AppShell>
+      {page === 'tutorial' && <TutorialPage />}
+      {page === 'exercises' && <ExercisesPage />}
+      {page === 'editor' && <EditorPage />}
 
-          <div className="section section-preview">
-            <div className="section-label-row">
-              <span className="section-label">Live preview</span>
-              <div className="zoom-btns">
-                {ZOOM_LEVELS.map((level) => (
-                  <button
-                    key={level}
-                    type="button"
-                    className={`zoom-btn ${zoom === level ? 'active' : ''}`}
-                    onClick={() => setZoom(level)}
-                  >
-                    {level}×
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="live-preview" style={{ fontSize: `${zoom}em` }}>
-              {tex ? (
-                <MathJaxRenderer tex={tex} displayMode />
-              ) : (
-                <span className="placeholder" style={{ fontSize: '0.5em' }}>
-                  Live preview will appear here
-                </span>
-              )}
-            </div>
-          </div>
-
-          {!isHidden(config, 'embedCode') && <EmbedCode tex={tex} />}
-
-          {!isHidden(config, 'serverRender') && (
-            <ServerRenderPanel tex={tex} zoom={zoom} />
-          )}
-        </main>
-
-        <SidePanel config={config} onSelect={setTex} />
-      </div>
-
-      {sharing && (
+      {state.view.sharing.value && (
         <ShareDialog
           initialConfig={draftFrom(config)}
           href={window.location.href}
-          onClose={() => setSharing(false)}
+          onClose={closeShare}
         />
       )}
     </AppShell>

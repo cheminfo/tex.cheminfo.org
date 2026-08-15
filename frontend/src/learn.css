@@ -1,0 +1,373 @@
+/* Level colours: green is a first step, amber is work, red is the deep end. */
+.level-beginner {
+  --level: var(--success);
+}
+
+.level-intermediate {
+  --level: var(--warning);
+}
+
+.level-advanced {
+  --level: var(--danger);
+}
+
+/* ── Progress ─────────────────────────────────────────────── */
+.progress-track {
+  overflow: hidden;
+  width: 140px;
+  height: 8px;
+  flex-shrink: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.2s;
+}
+
+.confirm-row {
+  display: flex;
+  align-items: center;
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 600;
+  gap: 6px;
+}
+
+/* ── Series strips ───────────────────────────────────────── */
+.series-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.series-strip {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--level) 35%, var(--border-strong));
+  border-left: 4px solid var(--level);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--level) 7%, white);
+  gap: 12px;
+}
+
+.series-head {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.series-title {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.series-desc {
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.series-buttons {
+  display: flex;
+  flex-shrink: 0;
+  gap: 4px;
+}
+
+.series-btn {
+  display: flex;
+  min-width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 700;
+  gap: 3px;
+  transition:
+    background 0.12s,
+    border-color 0.12s,
+    color 0.12s;
+}
+
+.series-btn:hover {
+  border-color: var(--level);
+}
+
+.series-btn.status-solved {
+  border-color: var(--success);
+  background: color-mix(in oklab, var(--success) 16%, white);
+  color: color-mix(in oklab, var(--success) 80%, black);
+}
+
+.series-btn.status-attempted {
+  border-color: var(--warning);
+  background: color-mix(in oklab, var(--warning) 16%, white);
+  color: color-mix(in oklab, var(--warning) 80%, black);
+}
+
+.series-btn.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.series-dot {
+  font-size: 10px;
+}
+
+/* ── One exercise ────────────────────────────────────────── */
+.exercise {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.level-tag {
+  padding: 2px 8px;
+  border: 1px solid color-mix(in srgb, var(--level) 45%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--level) 14%, white);
+  color: color-mix(in oklab, var(--level) 78%, black);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.solved-tag {
+  color: var(--success);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.exercise-prompt {
+  margin: 0 0 12px;
+  color: var(--text);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+.target-well,
+.answer-well {
+  position: relative;
+  display: flex;
+  overflow: auto;
+  min-height: 88px;
+  align-items: center;
+  justify-content: center;
+  padding: 22px 14px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface-sunken);
+}
+
+.target-well {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: color-mix(in srgb, var(--accent) 6%, white);
+}
+
+.answer-well {
+  margin-top: 12px;
+}
+
+.answer-well.is-solved {
+  border-color: var(--success);
+  background: color-mix(in oklab, var(--success) 8%, white);
+}
+
+.well-label {
+  position: absolute;
+  top: 6px;
+  left: 10px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── Command chips ───────────────────────────────────────── */
+.chip-row {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+.chip {
+  padding: 3px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font-family: 'Fira Mono', 'Cascadia Code', Consolas, monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.chip:hover {
+  border-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 10%, white);
+  color: var(--accent);
+}
+
+/* ── Feedback ────────────────────────────────────────────── */
+.feedback {
+  padding: 9px 12px;
+  border: 1px solid;
+  border-left-width: 4px;
+  border-radius: 6px;
+  margin: 12px 0 0;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.feedback-solved {
+  border-color: var(--success);
+  background: color-mix(in oklab, var(--success) 12%, white);
+  color: color-mix(in oklab, var(--success) 80%, black);
+}
+
+.feedback-wrong {
+  border-color: var(--warning);
+  background: color-mix(in oklab, var(--warning) 12%, white);
+  color: color-mix(in oklab, var(--warning) 80%, black);
+}
+
+.feedback-error {
+  border-color: var(--danger);
+  background: color-mix(in oklab, var(--danger) 10%, white);
+  color: color-mix(in oklab, var(--danger) 80%, black);
+  font-family: 'Fira Mono', 'Cascadia Code', Consolas, monospace;
+}
+
+/* ── Actions ─────────────────────────────────────────────── */
+.button-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  gap: 6px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition:
+    background 0.12s,
+    border-color 0.12s,
+    color 0.12s;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 8%, white);
+  color: var(--accent);
+}
+
+.btn:disabled {
+  border-color: var(--border);
+  color: var(--text-faint);
+  cursor: default;
+}
+
+.btn-primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--accent) 85%, black);
+  color: #fff;
+}
+
+.btn-danger {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: #fff;
+}
+
+.btn-danger:hover:not(:disabled) {
+  border-color: var(--danger);
+  background: color-mix(in oklab, var(--danger) 85%, black);
+  color: #fff;
+}
+
+.btn-next {
+  border-color: var(--brand-alt-text);
+  color: var(--brand-alt-text);
+}
+
+.btn-next:hover:not(:disabled) {
+  border-color: var(--brand-alt-text);
+  background: color-mix(in oklab, var(--brand-alt) 16%, white);
+  color: var(--brand-alt-text);
+}
+
+/* ── Hints and solution ──────────────────────────────────── */
+.hint-list {
+  padding-left: 20px;
+  border-left: 4px solid var(--brand-alt);
+  margin: 12px 0 0;
+  color: var(--text);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.hint-list li {
+  margin: 3px 0;
+}
+
+.solution-block {
+  position: relative;
+  padding: 22px 12px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  margin-top: 12px;
+  background: var(--surface-sunken);
+}
+
+.solution-code {
+  display: block;
+  overflow-x: auto;
+  color: var(--text);
+  font-family: 'Fira Mono', 'Cascadia Code', Consolas, monospace;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+/* The name of a step or an exercise: a title, not a section label. */
+.step-title {
+  flex: 1;
+  color: var(--text);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}

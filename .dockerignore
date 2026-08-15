@@ -7,7 +7,6 @@
 .gitignore
 compose*.yaml
 coverage
-deploy.sh
 node_modules
 **/node_modules
 **/coverage

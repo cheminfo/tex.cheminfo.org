@@ -1,17 +1,17 @@
 .doc-section {
   border-radius: 8px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-strong);
   overflow: hidden;
 }
 
 .doc-section-title {
-  font-size: 10px;
+  font-size: 11.5px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--accent);
   padding: 7px 12px;
-  background: color-mix(in srgb, var(--accent) 7%, white);
+  background: color-mix(in srgb, var(--accent) 10%, white);
   border-bottom: 1px solid color-mix(in srgb, var(--accent) 12%, transparent);
 }
 

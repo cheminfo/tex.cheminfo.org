@@ -13,21 +13,34 @@ interface Props {
 
 const theme = EditorView.theme({
   '&': {
-    fontSize: '13px',
+    fontSize: '14px',
     fontFamily: "'Fira Mono', 'Cascadia Code', 'Consolas', monospace",
-    border: '1px solid #dde1e7',
-    borderRadius: '6px',
-    background: '#fafafa',
-    minHeight: '80px',
+    border: '1px solid var(--border-strong)',
+    borderRadius: '8px',
+    background: 'var(--surface)',
+    color: 'var(--text)',
+    minHeight: '86px',
   },
   '&.cm-focused': {
     outline: 'none',
-    borderColor: '#4338ca',
-    background: '#fff',
+    borderColor: 'var(--accent)',
+    boxShadow: '0 0 0 3px color-mix(in oklab, var(--accent) 18%, transparent)',
   },
-  '.cm-scroller': { minHeight: '80px' },
-  '.cm-content': { padding: '10px' },
-  '.cm-line': { lineHeight: '1.6' },
+  '.cm-scroller': { minHeight: '86px' },
+  '.cm-content': { padding: '11px' },
+  '.cm-line': { lineHeight: '1.65' },
+  '.cm-gutters': {
+    border: 'none',
+    background: 'var(--surface-sunken)',
+    color: 'var(--text-muted)',
+  },
+  '.cm-activeLine': {
+    background: 'color-mix(in oklab, var(--accent) 5%, white)',
+  },
+  '.cm-activeLineGutter': {
+    background: 'color-mix(in oklab, var(--accent) 8%, white)',
+    color: 'var(--text)',
+  },
   '.cm-tooltip.cm-tooltip-autocomplete': { fontFamily: 'inherit' },
 });
 

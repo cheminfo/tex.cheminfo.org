@@ -38,7 +38,7 @@
 
 .cmd-name {
   font-family: 'Fira Mono', 'Cascadia Code', 'Consolas', monospace;
-  font-size: 11.5px;
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--accent);
   white-space: nowrap;
@@ -46,16 +46,16 @@
 
 .cmd-syntax {
   font-family: 'Fira Mono', 'Cascadia Code', 'Consolas', monospace;
-  font-size: 10px;
-  color: var(--text-faint);
+  font-size: 11px;
+  color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .cmd-info {
-  font-size: 10px;
-  color: var(--text-muted);
+  font-size: 11.5px;
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

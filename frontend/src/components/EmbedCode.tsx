@@ -25,15 +25,19 @@ const FORMATS = [
 export function EmbedCode({ tex }: { tex: string }) {
   return (
     <div className="section section-code">
-      <span className="section-label">Embed code</span>
-      {FORMATS.map((format) => (
-        <EmbedCodeRow
-          key={format.key}
-          label={format.label}
-          title={format.title}
-          value={tex ? format.build(tex) : ''}
-        />
-      ))}
+      <div className="section-head">
+        <span className="section-label">Embed code</span>
+      </div>
+      <div className="section-body">
+        {FORMATS.map((format) => (
+          <EmbedCodeRow
+            key={format.key}
+            label={format.label}
+            title={format.title}
+            value={tex ? format.build(tex) : ''}
+          />
+        ))}
+      </div>
     </div>
   );
 }

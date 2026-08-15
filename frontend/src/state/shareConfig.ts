@@ -12,6 +12,8 @@ export const HIDEABLE_FEATURES = [
   'help',
   'embedCode',
   'serverRender',
+  'exerciseList',
+  'tutorialSteps',
 ] as const;
 
 export type FeatureKey = (typeof HIDEABLE_FEATURES)[number];

@@ -7,6 +7,9 @@
 - Stateless GET API — embed rendered math anywhere with a plain `<img>` tag
 - SVG and PNG output with configurable background color and PNG resolution
 - React frontend with live MathJax preview, example gallery, and clipboard export
+- A guided tutorial: seventeen editable steps with hoverable definitions
+- Exercise series that teach the notation: reproduce a rendered formula, marked
+  on what it renders to rather than on how it is written
 - Shareable and embeddable: every link reproduces exactly what the author sees
 - Drop-in URL compatibility with `tex.cheminfo.org/?tex=...` bookmarks and links
 
@@ -59,12 +62,22 @@ Every address the frontend understands is a link you can hand out. The **Share**
 button in the header builds one for you, and offers a ready-to-paste iframe
 snippet.
 
-| Parameter | Default | Description                                                                                                                                |
-| --------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `tex`     | (empty) | The formula the page opens on                                                                                                              |
-| `embed`   | off     | Drop the site header, so the page fits inside your own site. `?embed` and `?embed=1` both work                                             |
-| `hide`    | (empty) | Comma-separated features to switch off: `examples`, `reference`, `commands`, `help`, `embedCode`, `serverRender`. Unknown keys are ignored |
-| `zoom`    | `2`     | Preview magnification, clamped to 1–3                                                                                                      |
+### Addresses
+
+| Address           | Page                                                 |
+| ----------------- | ---------------------------------------------------- |
+| `/`               | The editor, optionally carrying a formula in `?tex=` |
+| `/exercises`      | The exercise series, opening on the first exercise   |
+| `/exercises/<id>` | One exercise — e.g. `/exercises/nernst`              |
+
+### Parameters
+
+| Parameter | Default | Description                                                                                                                                                                 |
+| --------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tex`     | (empty) | The formula the editor opens on                                                                                                                                             |
+| `embed`   | off     | Drop the site header, so the page fits inside your own site. `?embed` and `?embed=1` both work                                                                              |
+| `hide`    | (empty) | Comma-separated features to switch off: `examples`, `reference`, `commands`, `help`, `embedCode`, `serverRender`, `exerciseList`, `tutorialSteps`. Unknown keys are ignored |
+| `zoom`    | `2`     | Preview magnification, clamped to 1–3                                                                                                                                       |
 
 ```html
 <iframe
@@ -76,6 +89,40 @@ snippet.
 ></iframe>
 ```
 
+Embedding a single exercise in a course page — `hide=exerciseList` leaves
+exactly the exercise the link names:
+
+```html
+<iframe
+  src="https://tex.cheminfo.org/exercises/nernst?embed=1&hide=exerciseList"
+  width="100%"
+  height="700"
+  style="border: 1px solid #ddd; border-radius: 8px"
+  title="tex.cheminfo.org — Nernst equation exercise"
+></iframe>
+```
+
+## Tutorial
+
+`/tutorial` walks the notation in seventeen steps, grouped into three
+colour-coded levels. A step is not a slide: its formula is preloaded into a live
+playground the student is free to take apart, and the jargon in the prose
+carries hoverable definitions drawn from a glossary. The reference panel stays
+beside it, and any entry clicked there is appended to the playground.
+
+## Exercises
+
+Six series — powers and indices, fractions and roots, Greek letters and
+symbols, big operators, chemistry notation with mhchem, and environments —
+hold 33 exercises. Each one renders the formula to reproduce, takes an answer
+in the same editor the tool uses everywhere, and offers ordered hints and a
+revealable solution.
+
+An answer is marked on its **MathML**, not on its source: `x^{2}` and `x^2`,
+`\frac12` and `\frac{1}{2}`, `\int_0^1 x^2\,dx` and `\int_{0}^{1} x^{2} dx`
+are each the same answer. Progress is kept in `localStorage` and is
+best-effort, so a framed page that cannot write storage still works.
+
 ## Environment
 
 Copy `.env.example` to `.env` and adjust. Every variable is optional.
@@ -84,7 +131,7 @@ Copy `.env.example` to `.env` and adjust. Every variable is optional.
 | ----------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `COMPOSE_FILE`    | `compose.yaml`                      | Which deployment mode `docker compose` loads                                                                                                         |
 | `IMAGE_NAME`      | `ghcr.io/cheminfo/tex.cheminfo.org` | Published image name                                                                                                                                 |
-| `IMAGE_TAG`       | `latest`                            | Rewritten by `./deploy.sh` — do not edit by hand                                                                                                     |
+| `IMAGE_TAG`       | `latest`                            | Rewritten by the server's deploy script — do not edit by hand                                                                                        |
 | `PORT`            | `10422`                             | Port the backend listens on                                                                                                                          |
 | `TRUST_PROXY`     | `false`                             | The reverse proxies whose `X-Forwarded-For` is believed: an address, a CIDR range, a list, or a hop count                                            |
 | `TRACKING_SCRIPT` | (unset)                             | Audience-measurement snippet, injected verbatim at the end of the served page's `<head>`. Unset means nothing is loaded, so a dev run tracks nothing |
@@ -120,21 +167,14 @@ application with Service `HTTP`, URL `tex:10422`, hostname `tex.lactame.com`.
 
 ## Deploy and rollback
 
-Deploy with `./deploy.sh`, never with `git pull && docker compose up -d --build`
-— that overwrites the running tag in place and moves the source underneath it,
-leaving nothing to roll back to.
+Deployment is handled by the global deploy script installed on the server, never
+by `git pull && docker compose up -d --build` — that overwrites the running tag
+in place and moves the source underneath it, leaving nothing to roll back to.
 
-```sh
-./deploy.sh              # build, tag immutably, start, health-probe, auto-revert on failure
-./deploy.sh rollback     # back to the previous deployment (image + source commit)
-./deploy.sh rollback TAG # back to a specific recorded deployment
-./deploy.sh list         # the active tag and the deployment history
-./deploy.sh prune        # drop images older than the last 10 deployments
-```
-
-Each deploy writes an immutable `IMAGE_TAG` into `.env` and records it in
-`.deploy/history` with its commit. A rollback leaves a detached HEAD on purpose;
-run `git checkout main` once the fix is pushed.
+This repository only provides what that script consumes: every compose file
+resolves `${IMAGE_NAME:-…}:${IMAGE_TAG:-latest}`, `.env` carries both variables,
+and the backend exposes `/v1/health`. The script writes an immutable `IMAGE_TAG`
+into `.env` and keeps its per-host state in `.deploy`, which is never committed.
 
 ---
 
