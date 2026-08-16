@@ -1,5 +1,6 @@
 import { useSignals } from '@preact/signals-react/runtime';
 import type { MouseEvent, ReactNode } from 'react';
+import { EcosystemButton } from 'react-cheminfo/ui';
 
 import { navigate, openShare, state } from '../state/index.ts';
 import type { Page } from '../state/router.ts';
@@ -33,53 +34,58 @@ export function AppShell({ children }: { children: ReactNode }) {
             <BrandMark />
             <Wordmark />
           </a>
+          <nav className="app-header-nav">
+            <a
+              className={`nav-link ${page === 'editor' ? 'nav-link--active' : ''}`}
+              href="/"
+              onClick={(event) => go(event, 'editor')}
+              title="Write a formula and take away its image"
+            >
+              Editor
+            </a>
+            <a
+              className={`nav-link ${
+                page === 'tutorial' ? 'nav-link--active' : ''
+              }`}
+              href="/tutorial"
+              onClick={(event) => go(event, 'tutorial')}
+              title="A guided tour of the notation, one editable step at a time"
+            >
+              Tutorial
+            </a>
+            <a
+              className={`nav-link ${
+                page === 'exercises' ? 'nav-link--active' : ''
+              }`}
+              href="/exercises"
+              onClick={(event) => go(event, 'exercises')}
+              title="Learn the notation by writing it"
+            >
+              Exercises
+            </a>
+          </nav>
           <span className="spacer" />
-          <a
-            className={`nav-link ${page === 'editor' ? 'nav-link--active' : ''}`}
-            href="/"
-            onClick={(event) => go(event, 'editor')}
-            title="Write a formula and take away its image"
-          >
-            Editor
-          </a>
-          <a
-            className={`nav-link ${
-              page === 'tutorial' ? 'nav-link--active' : ''
-            }`}
-            href="/tutorial"
-            onClick={(event) => go(event, 'tutorial')}
-            title="A guided tour of the notation, one editable step at a time"
-          >
-            Tutorial
-          </a>
-          <a
-            className={`nav-link ${
-              page === 'exercises' ? 'nav-link--active' : ''
-            }`}
-            href="/exercises"
-            onClick={(event) => go(event, 'exercises')}
-            title="Learn the notation by writing it"
-          >
-            Exercises
-          </a>
-          <a
-            className="nav-link"
-            href="/docs"
-            target="_blank"
-            rel="noreferrer"
-            title="OpenAPI documentation for the rendering API"
-          >
-            API
-          </a>
-          <button
-            type="button"
-            className="nav-link"
-            onClick={openShare}
-            title="Share a link to this page, or embed it in your own site"
-          >
-            <ShareIcon />
-            Share
-          </button>
+          <div className="app-header-actions">
+            <a
+              className="nav-link"
+              href="/docs"
+              target="_blank"
+              rel="noreferrer"
+              title="OpenAPI documentation for the rendering API"
+            >
+              API
+            </a>
+            <EcosystemButton currentSiteId="tex" />
+            <button
+              type="button"
+              className="nav-link"
+              onClick={openShare}
+              title="Share a link to this page, or embed it in your own site"
+            >
+              <ShareIcon />
+              Share
+            </button>
+          </div>
         </div>
       </header>
       {children}

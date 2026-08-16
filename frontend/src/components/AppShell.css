@@ -17,6 +17,15 @@
   gap: 1rem;
 }
 
+/* The pages sit next to the brand, the utilities keep the right edge. */
+.app-header-nav,
+.app-header-actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.15rem;
+}
+
 .spacer {
   flex: 1;
 }
