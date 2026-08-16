@@ -1,6 +1,6 @@
 import { useSignals } from '@preact/signals-react/runtime';
 import type { MouseEvent, ReactNode } from 'react';
-import { EcosystemButton } from 'react-cheminfo/ui';
+import { EcosystemButton, EcosystemLinks } from 'react-cheminfo/ui';
 
 import { navigate, openShare, state } from '../state/index.ts';
 import type { Page } from '../state/router.ts';
@@ -89,6 +89,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </header>
       {children}
+      <footer className="app-footer no-print">
+        <div className="app-footer__inner">
+          <EcosystemLinks currentSiteId="tex" />
+        </div>
+      </footer>
     </>
   );
 }
