@@ -14,7 +14,8 @@ import renderRoutes from './routes/render.ts';
 import type { FastifyTyped } from './types.ts';
 import { injectTrackingScript } from './utils/injectTrackingScript.ts';
 import { injectPageMeta } from './utils/pageMeta.ts';
-import { buildSitemap, sitemapPaths } from './utils/sitemap.ts';
+import { readRoutes } from './utils/routes.ts';
+import { buildSitemap } from './utils/sitemap.ts';
 
 export interface BuildAppOptions {
   /**
@@ -98,11 +99,14 @@ function registerFrontend(
     options.trackingScript,
   );
 
+  const routes = readRoutes(root);
+
   const sendIndex = (request: FastifyRequest, reply: FastifyReply) =>
     reply.type('text/html; charset=utf-8').send(
       injectPageMeta(index, {
         url: request.url,
         origin: options.siteUrl ?? `${request.protocol}://${request.host}`,
+        routes,
       }),
     );
 
@@ -110,7 +114,7 @@ function registerFrontend(
 
   fastify.get('/index.html', { schema: { hide: true } }, sendIndex);
 
-  const paths = sitemapPaths(root);
+  const paths = routes.map((route) => route.path);
   fastify.get('/sitemap.xml', { schema: { hide: true } }, (request, reply) =>
     reply
       .type('application/xml; charset=utf-8')

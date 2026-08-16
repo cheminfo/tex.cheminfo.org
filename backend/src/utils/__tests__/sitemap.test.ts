@@ -5,7 +5,8 @@ import { join } from 'node:path';
 import { expect, test } from 'vitest';
 
 import { pageMetaFor } from '../pageMeta.ts';
-import { buildSitemap, sitemapPaths } from '../sitemap.ts';
+import { readRoutes } from '../routes.ts';
+import { buildSitemap } from '../sitemap.ts';
 
 function rootHolding(routes: unknown): string {
   const root = mkdtempSync(join(tmpdir(), 'tex-sitemap-'));
@@ -13,41 +14,50 @@ function rootHolding(routes: unknown): string {
   return root;
 }
 
-test('the addresses come from the build that knows them', () => {
-  const root = rootHolding(['/', '/tutorial', '/tutorial/1', '/exercises']);
+const BUILT = [
+  { path: '/', title: 'Editor', description: 'Write a formula.' },
+  { path: '/tutorial', title: 'Tutorial', description: 'The notation.' },
+  {
+    path: '/tutorial/1',
+    title: 'A formula is text — LaTeX tutorial',
+    description: 'Everything you type is math.',
+  },
+  { path: '/exercises', title: 'Exercises', description: 'Practise it.' },
+];
 
-  expect(sitemapPaths(root)).toStrictEqual([
-    '/',
-    '/tutorial',
-    '/tutorial/1',
-    '/exercises',
-  ]);
+test('the addresses come from the build that knows them', () => {
+  expect(readRoutes(rootHolding(BUILT))).toStrictEqual(BUILT);
 });
 
 test('without a build, the pages that always exist are still listed', () => {
-  expect(sitemapPaths('/nowhere-at-all')).toStrictEqual([
-    '/',
-    '/tutorial',
-    '/exercises',
-  ]);
+  expect(
+    readRoutes('/nowhere-at-all').map((route) => route.path),
+  ).toStrictEqual(['/', '/tutorial', '/exercises']);
 });
 
 test('a routes file we did not write is ignored rather than trusted', () => {
-  expect(sitemapPaths(rootHolding({ not: 'an array' }))).toStrictEqual([
-    '/',
-    '/tutorial',
-    '/exercises',
-  ]);
-  expect(sitemapPaths(rootHolding([1, 2, 3]))).toStrictEqual([
-    '/',
-    '/tutorial',
-    '/exercises',
-  ]);
+  const fallback = ['/', '/tutorial', '/exercises'];
+
+  expect(
+    readRoutes(rootHolding({ not: 'an array' })).map((route) => route.path),
+  ).toStrictEqual(fallback);
+  expect(readRoutes(rootHolding([1, 2, 3])).map((r) => r.path)).toStrictEqual(
+    fallback,
+  );
+  expect(
+    readRoutes(rootHolding(['/', '/tutorial'])).map((r) => r.path),
+  ).toStrictEqual(fallback);
+  expect(
+    readRoutes(rootHolding([{ path: '/tutorial/1', title: 'No description' }])),
+  ).toHaveLength(3);
 });
 
 test('every address always listed is one the site describes as itself', () => {
-  for (const path of sitemapPaths('/nowhere-at-all')) {
-    expect(pageMetaFor(path).canonicalPath).toBe(path);
+  for (const route of readRoutes('/nowhere-at-all')) {
+    const meta = pageMetaFor(route.path);
+    expect(meta.canonicalPath).toBe(route.path);
+    expect(route.title).toBe(meta.title);
+    expect(route.description).toBe(meta.description);
   }
 });
 

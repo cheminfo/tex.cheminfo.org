@@ -40,6 +40,59 @@ test('each page has its own title and description', () => {
   expect(pageMetaFor('/exercises').description).toContain('Graded LaTeX');
 });
 
+test('a step and an exercise are named by the build, not by their parent', () => {
+  const routes = [
+    {
+      path: '/tutorial/2',
+      title: 'Above and below: ^ and _ — LaTeX tutorial',
+      description:
+        'A caret raises what follows it and an underscore lowers it.',
+    },
+    {
+      path: '/exercises/x-squared',
+      title: 'x squared — LaTeX exercise',
+      description: 'Write x raised to the power 2.',
+    },
+  ];
+
+  expect(pageMetaFor('/tutorial/2', routes)).toStrictEqual({
+    title: 'Above and below: ^ and _ — LaTeX tutorial',
+    description: 'A caret raises what follows it and an underscore lowers it.',
+    canonicalPath: '/tutorial/2',
+  });
+  expect(pageMetaFor('/exercises/x-squared?embed=1', routes).title).toBe(
+    'x squared — LaTeX exercise',
+  );
+  // A step the build does not know is still the tutorial, never a 404 head.
+  expect(pageMetaFor('/tutorial/99', routes).title).toBe(
+    'LaTeX tutorial — powers, fractions, symbols, chemistry',
+  );
+});
+
+test('the served page carries the step it is on, for a crawler that reads it', () => {
+  const html = injectPageMeta(PAGE, {
+    url: '/tutorial/2?embed=1',
+    origin: 'https://tex.cheminfo.org',
+    routes: [
+      {
+        path: '/tutorial/2',
+        title: 'Above and below: ^ and _ — LaTeX tutorial',
+        description: 'A caret raises what follows it.',
+      },
+    ],
+  });
+
+  expect(html).toContain(
+    '<title>Above and below: ^ and _ — LaTeX tutorial — tex.cheminfo.org</title>',
+  );
+  expect(html).toContain(
+    '<meta name="description" content="A caret raises what follows it." />',
+  );
+  expect(html).toContain(
+    '<link rel="canonical" href="https://tex.cheminfo.org/tutorial/2" />',
+  );
+});
+
 test('the built-in title and description are replaced, not doubled', () => {
   const html = injectPageMeta(PAGE, {
     url: '/tutorial',

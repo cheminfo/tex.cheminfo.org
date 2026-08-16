@@ -31,14 +31,14 @@ export function documentTitle(route: Route): string {
     const step = route.step ? TUTORIAL_STEPS[route.step - 1] : undefined;
     return step
       ? `${step.title} — LaTeX tutorial — ${SITE_NAME}`
-      : `LaTeX tutorial — ${SITE_NAME}`;
+      : `LaTeX tutorial — powers, fractions, symbols, chemistry — ${SITE_NAME}`;
   }
 
   if (route.page === 'exercises') {
     const found = findExercise(route.exerciseId);
     return found
-      ? `${found.exercise.title} — LaTeX exercises — ${SITE_NAME}`
-      : `LaTeX exercises — ${SITE_NAME}`;
+      ? `${found.exercise.title} — LaTeX exercise — ${SITE_NAME}`
+      : `LaTeX exercises — practise the notation by writing it — ${SITE_NAME}`;
   }
 
   return `LaTeX to SVG and PNG — render a formula as an image — ${SITE_NAME}`;

@@ -1,3 +1,5 @@
+import type { RouteMeta } from './routes.ts';
+
 const SITE_NAME = 'tex.cheminfo.org';
 
 export interface PageMeta {
@@ -20,14 +22,17 @@ export interface PageMeta {
  * @param options.url - The address asked for, query string included.
  * @param options.origin - Where the site is served from, e.g.
  * `https://tex.cheminfo.org`. Written into every absolute address.
+ * @param options.routes - What the build says each address is called, from
+ * `readRoutes`. Without it a step and an exercise fall back to the name of the
+ * page holding them.
  * @returns The page, with its head rewritten for that route.
  */
 export function injectPageMeta(
   html: string,
-  options: { url: string; origin: string },
+  options: { url: string; origin: string; routes?: readonly RouteMeta[] },
 ): string {
-  const { url, origin } = options;
-  const meta = pageMetaFor(url);
+  const { url, origin, routes } = options;
+  const meta = pageMetaFor(url, routes);
   const title = `${meta.title} — ${SITE_NAME}`;
   const canonical = `${trimTrailingSlash(origin)}${meta.canonicalPath}`;
 
@@ -53,11 +58,26 @@ export function injectPageMeta(
  * editor, as the frontend router does, and is indexed as the home page rather
  * than under its own name.
  * @param url - The address asked for, query string included.
+ * @param routes - What the build says each address is called, from
+ * `readRoutes`. A step and an exercise are only named by it: the backend has
+ * no way of its own to know what they are about.
  * @returns The title, description and canonical path of that page.
  */
-export function pageMetaFor(url: string): PageMeta {
+export function pageMetaFor(
+  url: string,
+  routes: readonly RouteMeta[] = [],
+): PageMeta {
   const pathname = trimTrailingSlash(url.split('?', 1)[0] ?? '/') || '/';
   const [, first, second] = pathname.split('/');
+
+  const named = routes.find((route) => route.path === pathname);
+  if (named) {
+    return {
+      title: named.title,
+      description: named.description,
+      canonicalPath: pathname,
+    };
+  }
 
   if (first === 'tutorial') {
     return {

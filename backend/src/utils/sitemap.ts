@@ -1,29 +1,3 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-
-/**
- * Every address the frontend routes itself: the editor, the tutorial and each
- * of its steps, the exercises and each one of them. The frontend build writes
- * them next to the page, because it is the only side that knows how many steps
- * and exercises there are.
- * @param root - Where the built frontend is.
- * @returns The paths, the home page first, or the three pages that always exist
- * when no build has written them.
- */
-export function sitemapPaths(root: string): string[] {
-  try {
-    const routes: unknown = JSON.parse(
-      readFileSync(join(root, 'routes.json'), 'utf8'),
-    );
-    if (Array.isArray(routes) && routes.every((r) => typeof r === 'string')) {
-      return routes;
-    }
-  } catch {
-    // No build, or a file we did not write: the pages below always exist.
-  }
-  return ['/', '/tutorial', '/exercises'];
-}
-
 /**
  * The sitemap, listing every page of the site as an absolute address.
  * @param origin - Where the site is served from, e.g.
