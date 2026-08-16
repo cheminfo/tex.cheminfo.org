@@ -88,7 +88,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
-      {children}
+      <div className="app-main">{children}</div>
       <footer className="app-footer no-print">
         <div className="app-footer__inner">
           <EcosystemLinks currentSiteId="tex" />
