@@ -4,14 +4,53 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#a21caf" />
+    <!-- The title, the description, the canonical address and the social card
+         are rewritten per page by the server; these are what a build served on
+         its own carries. -->
     <meta
       name="description"
-      content="Render LaTeX formulas as SVG or PNG images, and embed them anywhere with a plain img tag."
+      content="Write a LaTeX or mhchem formula and take away its image: live preview, SVG and PNG download, and a permanent link any img tag can point at."
     />
-    <title>tex.cheminfo.org — LaTeX to SVG</title>
+    <title>
+      LaTeX to SVG and PNG — render a formula as an image — tex.cheminfo.org
+    </title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "tex.cheminfo.org",
+        "url": "https://tex.cheminfo.org/",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript",
+        "description": "Render LaTeX and mhchem formulas as SVG or PNG images, learn the notation with a guided tutorial, and practise it with graded exercises.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "isAccessibleForFree": true,
+        "publisher": { "@type": "Organization", "name": "cheminfo" }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <h1>tex.cheminfo.org — LaTeX formulas as images</h1>
+      <p>
+        Render a LaTeX or mhchem formula as an SVG or PNG image, learn the
+        notation step by step, and practise it with graded exercises. The tool
+        itself needs JavaScript; the rendering API does not.
+      </p>
+      <ul>
+        <li>
+          <a href="/">Editor — write a formula and take away its image</a>
+        </li>
+        <li>
+          <a href="/tutorial">Tutorial — the notation, one step at a time</a>
+        </li>
+        <li><a href="/exercises">Exercises — practise by writing it</a></li>
+        <li><a href="/docs">API documentation</a></li>
+      </ul>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

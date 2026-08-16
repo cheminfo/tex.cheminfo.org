@@ -11,6 +11,7 @@ const fastify = await buildApp({
   trustProxy: parseTrustProxy(process.env.TRUST_PROXY),
   trackingScript: process.env.TRACKING_SCRIPT,
   frontendRoot: existsSync(frontendDist) ? frontendDist : undefined,
+  siteUrl: process.env.SITE_URL,
 });
 
 const port = Number(process.env.PORT) || DEFAULT_PORT;

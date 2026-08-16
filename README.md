@@ -123,19 +123,40 @@ An answer is marked on its **MathML**, not on its source: `x^{2}` and `x^2`,
 are each the same answer. Progress is kept in `localStorage` and is
 best-effort, so a framed page that cannot write storage still works.
 
+## Search engines
+
+The pages are meant to be found, so the server hands a crawler a page that is
+already about the route it asked for — no script has to run first:
+
+- **A title, a description and a canonical address per page**, written into the
+  served HTML by `backend/src/utils/pageMeta.ts`. The canonical address drops
+  the query string, so the formulas and share configurations the tool writes
+  into the address never read as new pages.
+- **A social card** — Open Graph and Twitter tags, with `public/og.png` drawn by
+  this tool's own renderer.
+- **`robots.txt`** allows the pages and keeps crawlers out of `/v1/` and
+  `/docs`, which are endpoints rather than pages.
+- **`sitemap.xml`** is emitted at build time by `frontend/vite.sitemap.ts` from
+  the tutorial steps and exercises the app really routes, so content added to
+  either is listed without anybody remembering to.
+
+Set `SITE_URL` in production: without it the canonical address is derived from
+the request, which is only right when `TRUST_PROXY` names the proxy.
+
 ## Environment
 
 Copy `.env.example` to `.env` and adjust. Every variable is optional.
 
-| Variable          | Default                             | Description                                                                                                                                          |
-| ----------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `COMPOSE_FILE`    | `compose.yaml`                      | Which deployment mode `docker compose` loads                                                                                                         |
-| `IMAGE_NAME`      | `ghcr.io/cheminfo/tex.cheminfo.org` | Published image name                                                                                                                                 |
-| `IMAGE_TAG`       | `latest`                            | Rewritten by the server's deploy script — do not edit by hand                                                                                        |
-| `PORT`            | `10422`                             | Port the backend listens on                                                                                                                          |
-| `TRUST_PROXY`     | `false`                             | The reverse proxies whose `X-Forwarded-For` is believed: an address, a CIDR range, a list, or a hop count                                            |
-| `TRACKING_SCRIPT` | (unset)                             | Audience-measurement snippet, injected verbatim at the end of the served page's `<head>`. Unset means nothing is loaded, so a dev run tracks nothing |
-| `TUNNEL_TOKEN`    | (unset)                             | Cloudflare Tunnel token, for the cloudflared mode only                                                                                               |
+| Variable          | Default                             | Description                                                                                                                                                                                                |
+| ----------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `COMPOSE_FILE`    | `compose.yaml`                      | Which deployment mode `docker compose` loads                                                                                                                                                               |
+| `IMAGE_NAME`      | `ghcr.io/cheminfo/tex.cheminfo.org` | Published image name                                                                                                                                                                                       |
+| `IMAGE_TAG`       | `latest`                            | Rewritten by the server's deploy script — do not edit by hand                                                                                                                                              |
+| `PORT`            | `10422`                             | Port the backend listens on                                                                                                                                                                                |
+| `SITE_URL`        | (unset)                             | Where the site is served from, e.g. `https://tex.cheminfo.org`, written into every canonical and social address. Unset derives it from the request, which is only right when `TRUST_PROXY` names the proxy |
+| `TRUST_PROXY`     | `false`                             | The reverse proxies whose `X-Forwarded-For` is believed: an address, a CIDR range, a list, or a hop count                                                                                                  |
+| `TRACKING_SCRIPT` | (unset)                             | Audience-measurement snippet, injected verbatim at the end of the served page's `<head>`. Unset means nothing is loaded, so a dev run tracks nothing                                                       |
+| `TUNNEL_TOKEN`    | (unset)                             | Cloudflare Tunnel token, for the cloudflared mode only                                                                                                                                                     |
 
 ## Deployment
 

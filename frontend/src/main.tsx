@@ -7,11 +7,16 @@ import { createRoot } from 'react-dom/client';
 
 import './index.css';
 import App from './App.tsx';
-import { sanitizeStoredProgress, startRouting } from './state/index.ts';
+import {
+  sanitizeStoredProgress,
+  startDocumentMeta,
+  startRouting,
+} from './state/index.ts';
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
 startRouting();
+startDocumentMeta();
 sanitizeStoredProgress();
 
 const rootElement = document.querySelector('#root');

@@ -6,13 +6,14 @@ import fastifyStatic from '@fastify/static';
 import swagger from '@fastify/swagger';
 import swaggerUi from '@fastify/swagger-ui';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
-import type { FastifyReply } from 'fastify';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 import Fastify from 'fastify';
 
 import healthRoutes from './routes/health.ts';
 import renderRoutes from './routes/render.ts';
 import type { FastifyTyped } from './types.ts';
 import { injectTrackingScript } from './utils/injectTrackingScript.ts';
+import { injectPageMeta } from './utils/pageMeta.ts';
 
 export interface BuildAppOptions {
   /**
@@ -31,6 +32,13 @@ export interface BuildAppOptions {
    */
   frontendRoot?: string;
   /**
+   * Where the site is served from, e.g. `https://tex.cheminfo.org`, written
+   * into the canonical and social addresses of every page. Unset derives it
+   * from the request, which is only right when `trustProxy` names the proxy.
+   * @default undefined
+   */
+  siteUrl?: string;
+  /**
    * Whether Fastify logs requests.
    * @default true
    */
@@ -48,6 +56,7 @@ export async function buildApp(options: BuildAppOptions = {}) {
     trustProxy = false,
     trackingScript,
     frontendRoot,
+    siteUrl,
     logger = true,
   } = options;
 
@@ -72,7 +81,7 @@ export async function buildApp(options: BuildAppOptions = {}) {
   await fastify.register(renderRoutes);
 
   if (frontendRoot) {
-    registerFrontend(fastify, frontendRoot, trackingScript);
+    registerFrontend(fastify, frontendRoot, { trackingScript, siteUrl });
   }
 
   return fastify;
@@ -81,15 +90,20 @@ export async function buildApp(options: BuildAppOptions = {}) {
 function registerFrontend(
   fastify: FastifyTyped,
   root: string,
-  trackingScript: string | undefined,
+  options: { trackingScript?: string; siteUrl?: string },
 ): void {
   const index = injectTrackingScript(
     readFileSync(join(root, 'index.html'), 'utf8'),
-    trackingScript,
+    options.trackingScript,
   );
 
-  const sendIndex = (_request: unknown, reply: FastifyReply) =>
-    reply.type('text/html; charset=utf-8').send(index);
+  const sendIndex = (request: FastifyRequest, reply: FastifyReply) =>
+    reply.type('text/html; charset=utf-8').send(
+      injectPageMeta(index, {
+        url: request.url,
+        origin: options.siteUrl ?? `${request.protocol}://${request.host}`,
+      }),
+    );
 
   void fastify.register(fastifyStatic, { root, index: false });
 

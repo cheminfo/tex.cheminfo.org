@@ -1,13 +1,15 @@
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
+import { sitemap } from './vite.sitemap.ts';
+
 // Derived from the project creation date (2026-04-22); the dev server sits
 // one port above the backend so a single value drives both.
 const backendPort = Number(process.env.PORT ?? 10422);
 const devServerPort = Number(process.env.VITE_PORT ?? backendPort + 1);
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), sitemap()],
   build: {
     target: 'esnext',
   },
