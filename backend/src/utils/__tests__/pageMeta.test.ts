@@ -1,31 +1,30 @@
 import { expect, test } from 'vitest';
 
-import { injectPageMeta, pageMetaFor } from '../pageMeta.ts';
+import { injectCrawlPath, injectPageMeta, pageMetaFor } from '../pageMeta.ts';
 
 const PAGE = `<!doctype html>
 <html lang="en">
   <head>
-    <meta name="description" content="built-in" />
-    <title>built-in</title>
+    <!--cheminfo:head-->
   </head>
-  <body><div id="root"></div></body>
+  <body><div id="root"></div><!--cheminfo:body--></body>
 </html>
 `;
 
 test('the editor is what an unknown address is indexed as', () => {
-  expect(pageMetaFor('/nothing/here').canonicalPath).toBe('/');
-  expect(pageMetaFor('/?tex=x%5E2').canonicalPath).toBe('/');
+  expect(pageMetaFor('/nothing/here').path).toBe('/');
+  expect(pageMetaFor('/?tex=x%5E2').path).toBe('/');
   expect(pageMetaFor('/').title).toBe(
     'LaTeX to SVG and PNG — render a formula as an image',
   );
 });
 
 test('a page keeps its own address, a query string never makes a new one', () => {
-  expect(pageMetaFor('/tutorial').canonicalPath).toBe('/tutorial');
-  expect(pageMetaFor('/tutorial/4').canonicalPath).toBe('/tutorial/4');
-  expect(pageMetaFor('/tutorial/4?embed=1').canonicalPath).toBe('/tutorial/4');
-  expect(pageMetaFor('/exercises/').canonicalPath).toBe('/exercises');
-  expect(pageMetaFor('/exercises/powers-square?zoom=2').canonicalPath).toBe(
+  expect(pageMetaFor('/tutorial').path).toBe('/tutorial');
+  expect(pageMetaFor('/tutorial/4').path).toBe('/tutorial/4');
+  expect(pageMetaFor('/tutorial/4?embed=1').path).toBe('/tutorial/4');
+  expect(pageMetaFor('/exercises/').path).toBe('/exercises');
+  expect(pageMetaFor('/exercises/powers-square?zoom=2').path).toBe(
     '/exercises/powers-square',
   );
 });
@@ -58,7 +57,7 @@ test('a step and an exercise are named by the build, not by their parent', () =>
   expect(pageMetaFor('/tutorial/2', routes)).toStrictEqual({
     title: 'Above and below: ^ and _ — LaTeX tutorial',
     description: 'A caret raises what follows it and an underscore lowers it.',
-    canonicalPath: '/tutorial/2',
+    path: '/tutorial/2',
   });
   expect(pageMetaFor('/exercises/x-squared?embed=1', routes).title).toBe(
     'x squared — LaTeX exercise',
@@ -93,7 +92,7 @@ test('the served page carries the step it is on, for a crawler that reads it', (
   );
 });
 
-test('the built-in title and description are replaced, not doubled', () => {
+test('the template carries no head of its own, so nothing is doubled', () => {
   const html = injectPageMeta(PAGE, {
     url: '/tutorial',
     origin: 'https://tex.cheminfo.org',
@@ -102,9 +101,9 @@ test('the built-in title and description are replaced, not doubled', () => {
   expect(html).toContain(
     '<title>LaTeX tutorial — powers, fractions, symbols, chemistry — tex.cheminfo.org</title>',
   );
-  expect(html).not.toContain('built-in');
   expect(html.match(/<title>/g)).toHaveLength(1);
   expect(html.match(/name="description"/g)).toHaveLength(1);
+  expect(html).not.toContain('<!--cheminfo:head-->');
 });
 
 test('the page carries a canonical address and a social card', () => {
@@ -129,21 +128,48 @@ test('the page carries a canonical address and a social card', () => {
 });
 
 test('a hostile Host header cannot write markup into the page', () => {
+  expect(() =>
+    injectPageMeta(PAGE, {
+      url: '/',
+      origin: 'https://evil"><script>alert(1)</script>',
+    }),
+  ).toThrow('an origin is an absolute address');
+
+  // One that does parse is written escaped rather than as markup.
   const html = injectPageMeta(PAGE, {
     url: '/',
-    origin: 'https://evil"><script>alert(1)</script>',
+    origin: 'https://evil.example/x&y',
   });
-
-  expect(html).not.toContain('<script>alert(1)</script>');
-  expect(html).toContain('&quot;&gt;&lt;script&gt;');
+  expect(html).toContain('https://evil.example/x&amp;y');
 });
 
-test('a page without a head still gets its metadata', () => {
-  const html = injectPageMeta('<p>bare</p>', {
-    url: '/',
-    origin: 'https://tex.cheminfo.org',
-  });
+test('a page carrying no marker is refused rather than served headless', () => {
+  expect(() =>
+    injectPageMeta('<p>bare</p>', {
+      url: '/',
+      origin: 'https://tex.cheminfo.org',
+    }),
+  ).toThrow('the page carries no <!--cheminfo:head-->');
+});
 
-  expect(html).toContain('<title>');
-  expect(html).toContain('rel="canonical"');
+test('the crawl path links the pages relative to the mount', () => {
+  const html = injectCrawlPath(PAGE);
+
+  expect(html).toContain(
+    '<h1>tex.cheminfo.org — LaTeX formulas as images</h1>',
+  );
+  expect(html).toContain(
+    '<li><a href="./">Editor</a> — write a formula and take away its image</li>',
+  );
+  expect(html).toContain(
+    '<li><a href="./tutorial">Tutorial</a> — the notation, one step at a time</li>',
+  );
+  expect(html).toContain(
+    '<li><a href="./exercises">Exercises</a> — practise by writing it</li>',
+  );
+  expect(html).toContain('<li><a href="./docs">API documentation</a></li>');
+  // Its own host is never one of the family links it offers.
+  expect(html).toContain('<h2>Our other tools</h2>');
+  expect(html).not.toContain('https://tex.cheminfo.org/');
+  expect(html).not.toContain('<!--cheminfo:body-->');
 });

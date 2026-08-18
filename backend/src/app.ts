@@ -8,13 +8,15 @@ import swaggerUi from '@fastify/swagger-ui';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import Fastify from 'fastify';
+import { robotsTxt } from 'react-cheminfo/core';
 
 import healthRoutes from './routes/health.ts';
 import renderRoutes from './routes/render.ts';
 import type { FastifyTyped } from './types.ts';
 import { injectTrackingScript } from './utils/injectTrackingScript.ts';
-import { injectPageMeta } from './utils/pageMeta.ts';
+import { injectCrawlPath, injectPageMeta } from './utils/pageMeta.ts';
 import { readRoutes } from './utils/routes.ts';
+import { basePathOf, joinBase, mountedOrigin } from './utils/sitePath.ts';
 import { buildSitemap } from './utils/sitemap.ts';
 
 export interface BuildAppOptions {
@@ -94,19 +96,32 @@ function registerFrontend(
   root: string,
   options: { trackingScript?: string; siteUrl?: string },
 ): void {
-  const index = injectTrackingScript(
-    readFileSync(join(root, 'index.html'), 'utf8'),
-    options.trackingScript,
+  // The built page is a template: the crawl path is the same on every address,
+  // so it is written once here, and the head is written per request below.
+  const index = injectCrawlPath(
+    injectTrackingScript(
+      readFileSync(join(root, 'index.html'), 'utf8'),
+      options.trackingScript,
+    ),
   );
 
   const routes = readRoutes(root);
+
+  // `SITE_URL` carries the origin and the mount path together. A proxy that
+  // puts the tool under a path strips it before the request arrives, so the
+  // path is written back into every absolute address the pages hand out.
+  const site = options.siteUrl ? new URL(options.siteUrl) : null;
+  const basePath = site ? basePathOf(site.href) : '/';
+  const originOf = (request: FastifyRequest) =>
+    site?.origin ?? `${request.protocol}://${request.host}`;
 
   const sendIndex = (request: FastifyRequest, reply: FastifyReply) =>
     reply.type('text/html; charset=utf-8').send(
       injectPageMeta(index, {
         url: request.url,
-        origin: options.siteUrl ?? `${request.protocol}://${request.host}`,
+        origin: originOf(request),
         routes,
+        basePath,
       }),
     );
 
@@ -114,16 +129,31 @@ function registerFrontend(
 
   fastify.get('/index.html', { schema: { hide: true } }, sendIndex);
 
-  const paths = routes.map((route) => route.path);
+  const paths = routes.map((route) => joinBase(basePath, route.path));
   fastify.get('/sitemap.xml', { schema: { hide: true } }, (request, reply) =>
     reply
       .type('application/xml; charset=utf-8')
-      .send(
-        buildSitemap(
-          options.siteUrl ?? `${request.protocol}://${request.host}`,
-          paths,
-        ),
+      .send(buildSitemap(originOf(request), paths)),
+  );
+
+  // Written here rather than kept in `public/` because what it points at moves
+  // with the mount path. A crawler only reads it from the root of a host, so a
+  // tool mounted under a path is covered by whatever answers that root.
+  //
+  // `robotsTxt` allows the root of the host it is read from; a tool mounted
+  // under a path allows that mount instead, and the endpoints it keeps out of
+  // the index sit under it too.
+  fastify.get('/robots.txt', { schema: { hide: true } }, (request, reply) =>
+    reply.type('text/plain; charset=utf-8').send(
+      robotsTxt(
+        {
+          site: 'tex',
+          routes,
+          origin: mountedOrigin(originOf(request), basePath),
+        },
+        ['/v1/', '/docs'],
       ),
+    ),
   );
 
   fastify.setNotFoundHandler((request, reply) => {

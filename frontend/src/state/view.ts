@@ -6,6 +6,7 @@ import type { Route } from './router.ts';
 import { parseRoute, routePath } from './router.ts';
 import type { ShareConfig } from './shareConfig.ts';
 import { parseShareConfig } from './shareConfig.ts';
+import { pathWithoutBase, withBase } from './site.ts';
 
 /**
  * Everything the page is showing right now. Nothing here survives a reload,
@@ -102,8 +103,9 @@ export function startRouting(): void {
 
 function writeAddress(path: string, options?: { replace?: boolean }): void {
   const url = currentUrl();
-  if (!url || url.pathname === path) return;
-  url.pathname = path;
+  const mounted = withBase(path);
+  if (!url || url.pathname === mounted) return;
+  url.pathname = mounted;
   if (options?.replace) {
     globalThis.history?.replaceState(null, '', url.toString());
   } else {
@@ -117,7 +119,7 @@ function currentUrl(): URL | null {
 }
 
 function pathname(): string {
-  return globalThis.location?.pathname ?? '/';
+  return pathWithoutBase(globalThis.location?.pathname ?? '/');
 }
 
 function search(): string {

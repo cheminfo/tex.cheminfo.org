@@ -11,6 +11,14 @@ RUN npm ci --workspace=frontend --ignore-scripts
 
 COPY frontend ./frontend
 
+# The address the built page names as its own — the canonical link, the social
+# card and the sitemap entries — origin and mount path together. Left unset it
+# is this site's own host at the root of it:
+#   docker build --build-arg SITE_URL=https://example.org/tex/ .
+ARG SITE_URL=
+ENV SITE_URL=$SITE_URL
+
+
 RUN npm run build --workspace=frontend
 
 # ── Stage 2: production image ─────────────────────────────────────────────────

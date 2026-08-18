@@ -93,10 +93,14 @@ test('the header moves between the editor and the exercises', async ({
 }) => {
   await page.goto('/');
 
-  await page.getByRole('link', { name: 'Exercises' }).click();
+  // Picked by the words on the bar: the shared header names each entry after
+  // its tooltip, so the role name is the sentence rather than the label.
+  const nav = page.locator('.app-header-nav');
+
+  await nav.getByText('Exercises', { exact: true }).click();
   await expect(page).toHaveURL(/\/exercises/);
 
-  await page.getByRole('link', { name: 'Editor' }).click();
+  await nav.getByText('Editor', { exact: true }).click();
   await expect(page).toHaveURL(/localhost:\d+\/$/);
   await expect(page.locator('.latex-editor')).toBeVisible();
 });

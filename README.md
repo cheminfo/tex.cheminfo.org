@@ -136,27 +136,45 @@ already about the route it asked for — no script has to run first:
   this tool's own renderer.
 - **`robots.txt`** allows the pages and keeps crawlers out of `/v1/` and
   `/docs`, which are endpoints rather than pages.
-- **`sitemap.xml`** is emitted at build time by `frontend/vite.sitemap.ts` from
-  the tutorial steps and exercises the app really routes, so content added to
-  either is listed without anybody remembering to.
+- **`sitemap.xml`** and the `routes.json` the server titles its pages from are
+  both emitted at build time by `frontend/vite.siteFiles.ts`, out of the one
+  route table in `frontend/src/state/routes.ts` — the same table the running
+  app rewrites the head from — so a tutorial step or an exercise added to the
+  content is listed and named without anybody remembering to.
 
 Set `SITE_URL` in production: without it the canonical address is derived from
 the request, which is only right when `TRUST_PROXY` names the proxy.
+
+`SITE_URL` also carries a **mount path**, so the tool does not assume it owns
+the root of a host. `https://example.org/tex/` makes the build write every
+asset, route, canonical link, social card and sitemap entry under `/tex/`, and
+the server does the same for the head it rewrites per request:
+
+```sh
+SITE_URL=https://example.org/tex/ npm run build -w frontend
+docker build --build-arg SITE_URL=https://example.org/tex/ .
+```
+
+A proxy mounting the tool that way normally strips the prefix before the
+request arrives, which is what the server expects. `robots.txt` is served by
+the backend rather than kept in `public/`, because what it points at moves with
+the mount path — and a crawler only reads it from the root of a host, so a tool
+mounted under a path is covered by whatever answers that root.
 
 ## Environment
 
 Copy `.env.example` to `.env` and adjust. Every variable is optional.
 
-| Variable          | Default                             | Description                                                                                                                                                                                                |
-| ----------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `COMPOSE_FILE`    | `compose.yaml`                      | Which deployment mode `docker compose` loads                                                                                                                                                               |
-| `IMAGE_NAME`      | `ghcr.io/cheminfo/tex.cheminfo.org` | Published image name                                                                                                                                                                                       |
-| `IMAGE_TAG`       | `latest`                            | Rewritten by the server's deploy script — do not edit by hand                                                                                                                                              |
-| `PORT`            | `10422`                             | Port the backend listens on                                                                                                                                                                                |
-| `SITE_URL`        | (unset)                             | Where the site is served from, e.g. `https://tex.cheminfo.org`, written into every canonical and social address. Unset derives it from the request, which is only right when `TRUST_PROXY` names the proxy |
-| `TRUST_PROXY`     | `false`                             | The reverse proxies whose `X-Forwarded-For` is believed: an address, a CIDR range, a list, or a hop count                                                                                                  |
-| `TRACKING_SCRIPT` | (unset)                             | Audience-measurement snippet, injected verbatim at the end of the served page's `<head>`. Unset means nothing is loaded, so a dev run tracks nothing                                                       |
-| `TUNNEL_TOKEN`    | (unset)                             | Cloudflare Tunnel token, for the cloudflared mode only                                                                                                                                                     |
+| Variable          | Default                             | Description                                                                                                                                                                                                                                                                                          |
+| ----------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `COMPOSE_FILE`    | `compose.yaml`                      | Which deployment mode `docker compose` loads                                                                                                                                                                                                                                                         |
+| `IMAGE_NAME`      | `ghcr.io/cheminfo/tex.cheminfo.org` | Published image name                                                                                                                                                                                                                                                                                 |
+| `IMAGE_TAG`       | `latest`                            | Rewritten by the server's deploy script — do not edit by hand                                                                                                                                                                                                                                        |
+| `PORT`            | `10422`                             | Port the backend listens on                                                                                                                                                                                                                                                                          |
+| `SITE_URL`        | (unset)                             | Where the site is served, origin and mount path together, e.g. `https://tex.cheminfo.org/` or `https://example.org/tex/`, written into every canonical and social address. Unset derives the origin from the request, which is only right when `TRUST_PROXY` names the proxy, and mounts at the root |
+| `TRUST_PROXY`     | `false`                             | The reverse proxies whose `X-Forwarded-For` is believed: an address, a CIDR range, a list, or a hop count                                                                                                                                                                                            |
+| `TRACKING_SCRIPT` | (unset)                             | Audience-measurement snippet, injected verbatim at the end of the served page's `<head>`. Unset means nothing is loaded, so a dev run tracks nothing                                                                                                                                                 |
+| `TUNNEL_TOKEN`    | (unset)                             | Cloudflare Tunnel token, for the cloudflared mode only                                                                                                                                                                                                                                               |
 
 ## Deployment
 

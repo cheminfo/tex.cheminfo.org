@@ -1,12 +1,33 @@
 import { useSignals } from '@preact/signals-react/runtime';
-import type { MouseEvent, ReactNode } from 'react';
-import { EcosystemButton, EcosystemLinks } from 'react-cheminfo/ui';
+import type { ReactNode } from 'react';
+import { EcosystemButton, SiteFooter, SiteHeader } from 'react-cheminfo/ui';
 
 import { navigate, openShare, state } from '../state/index.ts';
-import type { Page } from '../state/router.ts';
+import { withBase } from '../state/site.ts';
 
-import './AppShell.css';
-import { BrandMark, Wordmark } from './Brand.tsx';
+const NAV = [
+  {
+    id: 'editor',
+    label: 'Editor',
+    href: withBase('/'),
+    title: 'Write a formula and take away its image',
+    onSelect: () => navigate({ page: 'editor' }),
+  },
+  {
+    id: 'tutorial',
+    label: 'Tutorial',
+    href: withBase('/tutorial'),
+    title: 'A guided tour of the notation, one editable step at a time',
+    onSelect: () => navigate({ page: 'tutorial' }),
+  },
+  {
+    id: 'exercises',
+    label: 'Exercises',
+    href: withBase('/exercises'),
+    title: 'Learn the notation by writing it',
+    onSelect: () => navigate({ page: 'exercises' }),
+  },
+] as const;
 
 /**
  * The site chrome: the brand at the left, the menu pushed right.
@@ -23,52 +44,17 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <header className="app-header no-print">
-        <div className="app-header__inner">
-          <a
-            href="/"
-            className="brand"
-            title="tex.cheminfo.org"
-            onClick={(event) => go(event, 'editor')}
-          >
-            <BrandMark />
-            <Wordmark />
-          </a>
-          <nav className="app-header-nav">
-            <a
-              className={`nav-link ${page === 'editor' ? 'nav-link--active' : ''}`}
-              href="/"
-              onClick={(event) => go(event, 'editor')}
-              title="Write a formula and take away its image"
-            >
-              Editor
-            </a>
-            <a
-              className={`nav-link ${
-                page === 'tutorial' ? 'nav-link--active' : ''
-              }`}
-              href="/tutorial"
-              onClick={(event) => go(event, 'tutorial')}
-              title="A guided tour of the notation, one editable step at a time"
-            >
-              Tutorial
-            </a>
-            <a
-              className={`nav-link ${
-                page === 'exercises' ? 'nav-link--active' : ''
-              }`}
-              href="/exercises"
-              onClick={(event) => go(event, 'exercises')}
-              title="Learn the notation by writing it"
-            >
-              Exercises
-            </a>
-          </nav>
-          <span className="spacer" />
-          <div className="app-header-actions">
+      <SiteHeader
+        siteId="tex"
+        homeHref={withBase('/')}
+        onHome={() => navigate({ page: 'editor' })}
+        activeId={page}
+        nav={NAV}
+        actions={
+          <>
             <a
               className="nav-link"
-              href="/docs"
+              href={withBase('/docs')}
               target="_blank"
               rel="noreferrer"
               title="OpenAPI documentation for the rendering API"
@@ -85,15 +71,11 @@ export function AppShell({ children }: { children: ReactNode }) {
               <ShareIcon />
               Share
             </button>
-          </div>
-        </div>
-      </header>
+          </>
+        }
+      />
       <div className="app-main">{children}</div>
-      <footer className="app-footer no-print">
-        <div className="app-footer__inner">
-          <EcosystemLinks currentSiteId="tex" />
-        </div>
-      </footer>
+      <SiteFooter siteId="tex" />
     </>
   );
 }
@@ -115,9 +97,4 @@ function ShareIcon() {
       <path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4" />
     </svg>
   );
-}
-
-function go(event: MouseEvent<HTMLAnchorElement>, next: Page): void {
-  event.preventDefault();
-  navigate({ page: next });
 }

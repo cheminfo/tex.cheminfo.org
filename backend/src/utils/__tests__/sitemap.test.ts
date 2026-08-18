@@ -55,7 +55,7 @@ test('a routes file we did not write is ignored rather than trusted', () => {
 test('every address always listed is one the site describes as itself', () => {
   for (const route of readRoutes('/nowhere-at-all')) {
     const meta = pageMetaFor(route.path);
-    expect(meta.canonicalPath).toBe(route.path);
+    expect(meta.path).toBe(route.path);
     expect(route.title).toBe(meta.title);
     expect(route.description).toBe(meta.description);
   }

@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "vite build && node scripts/writeRoutes.js",
+    "build": "vite build",
     "check-types": "tsc --noEmit",
     "dev": "vite",
     "preview": "vite preview --host 0.0.0.0",
@@ -24,7 +24,7 @@
     "codemirror": "^6.0.2",
     "mathjax-full": "^3.2.2",
     "react": "^19.2.8",
-    "react-cheminfo": "^0.2.0",
+    "react-cheminfo": "^0.6.0",
     "react-dom": "^19.2.8",
     "react-science": "^23.0.0"
   },

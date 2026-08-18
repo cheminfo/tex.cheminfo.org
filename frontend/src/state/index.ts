@@ -10,7 +10,6 @@ import { view } from './view.ts';
  */
 export const state = { view, data, preferences };
 
-export { documentTitle, startDocumentMeta } from './documentMeta.ts';
 export {
   closeShare,
   navigate,

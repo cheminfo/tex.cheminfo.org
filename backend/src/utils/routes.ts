@@ -1,16 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
+import type { RouteMeta } from 'react-cheminfo/core';
+
 import { pageMetaFor } from './pageMeta.ts';
 
-export interface RouteMeta {
-  /** The address, starting with a slash. */
-  path: string;
-  /** What that page is called, the site name not included. */
-  title: string;
-  /** The line a search result shows under the title. */
-  description: string;
-}
+export type { RouteMeta } from 'react-cheminfo/core';
 
 /** The pages that exist whatever the build wrote. */
 const ALWAYS = ['/', '/tutorial', '/exercises'];

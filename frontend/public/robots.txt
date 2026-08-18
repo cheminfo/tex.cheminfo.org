@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-# The rendering API and its documentation are endpoints, not pages.
-Disallow: /v1/
-Disallow: /docs
-
-Sitemap: https://tex.cheminfo.org/sitemap.xml
