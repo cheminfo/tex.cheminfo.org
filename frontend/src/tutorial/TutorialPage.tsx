@@ -3,7 +3,7 @@ import { useSignals } from '@preact/signals-react/runtime';
 import { PageLayout } from '../components/PageLayout.tsx';
 import { LatexEditor } from '../editor/LatexEditor.tsx';
 import { MathJaxRenderer } from '../shared/MathJaxRenderer.tsx';
-import { navigate, state, writeDraft } from '../state/index.ts';
+import { state, writeDraft } from '../state/index.ts';
 import type { FeatureKey } from '../state/shareConfig.ts';
 import { isHidden } from '../state/shareConfig.ts';
 
@@ -56,23 +56,6 @@ export function TutorialPage() {
           <span className="section-label step-title">
             {index + 1}. {step.title}
           </span>
-          <span className="spacer" />
-          <button
-            type="button"
-            className="btn"
-            disabled={index === 0}
-            onClick={() => open(index - 1)}
-          >
-            ← Previous
-          </button>
-          <button
-            type="button"
-            className="btn btn-primary"
-            disabled={index === TUTORIAL_STEPS.length - 1}
-            onClick={() => open(index + 1)}
-          >
-            Next →
-          </button>
         </div>
         <div className="section-body">
           <p className="step-description">
@@ -112,8 +95,4 @@ export function TutorialPage() {
       </div>
     </PageLayout>
   );
-}
-
-function open(index: number): void {
-  navigate({ page: 'tutorial', step: index + 1 });
 }

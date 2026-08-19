@@ -22,10 +22,10 @@ test('a step link opens that step', async ({ page }) => {
 test('next and previous walk the tour', async ({ page }) => {
   await page.goto('/tutorial/2');
 
-  await page.getByRole('button', { name: 'Next →' }).click();
+  await page.getByRole('button', { name: 'Next' }).click();
   await expect(page).toHaveURL(/\/tutorial\/3$/);
 
-  await page.getByRole('button', { name: '← Previous' }).click();
+  await page.getByRole('button', { name: 'Previous' }).click();
   await expect(page).toHaveURL(/\/tutorial\/2$/);
 });
 
@@ -58,6 +58,6 @@ test('an embedded step carries no header and no step list', async ({
   await page.goto('/tutorial/5?embed=1&hide=tutorialSteps');
 
   await expect(page.locator('.app-header')).toHaveCount(0);
-  await expect(page.locator('.series-nav')).toHaveCount(0);
+  await expect(page.locator('.tutorial-nav')).toHaveCount(0);
   await expect(page.locator('.step-description')).toBeVisible();
 });

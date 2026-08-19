@@ -15,16 +15,15 @@ export interface TutorialStep {
   level: Level;
 }
 
-export interface TutorialLevel {
-  level: Level;
-  label: string;
-}
-
-export const TUTORIAL_LEVELS: readonly TutorialLevel[] = [
-  { level: 'beginner', label: 'Reading and writing a formula' },
-  { level: 'intermediate', label: 'Operators, functions and spacing' },
-  { level: 'advanced', label: 'Structures, chemistry and images' },
-];
+/**
+ * What each of the three coloured strips is called on this course. The colours
+ * and the layout are the ecosystem's, and come with `TutorialStepStrip`.
+ */
+export const TUTORIAL_LEVEL_LABELS: Record<Level, string> = {
+  beginner: 'Reading and writing a formula',
+  intermediate: 'Operators, functions and spacing',
+  advanced: 'Structures, chemistry and images',
+};
 
 export const TUTORIAL_STEPS: readonly TutorialStep[] = [
   {

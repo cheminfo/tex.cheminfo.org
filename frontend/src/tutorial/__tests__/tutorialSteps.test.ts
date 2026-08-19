@@ -2,17 +2,18 @@ import { expect, test } from 'vitest';
 
 import { compileError } from '../../exercises/mathml.ts';
 import { GLOSSARY } from '../glossary.ts';
-import { TUTORIAL_LEVELS, TUTORIAL_STEPS } from '../tutorialSteps.ts';
+import { TUTORIAL_LEVEL_LABELS, TUTORIAL_STEPS } from '../tutorialSteps.ts';
 
 const MARKER = /\[\[(?<term>[^\]]+)\]\]/gu;
 
 test('the tour has 17 steps across its 3 levels', () => {
   expect(TUTORIAL_STEPS).toHaveLength(17);
-  expect(TUTORIAL_LEVELS).toHaveLength(3);
-  for (const group of TUTORIAL_LEVELS) {
+  const levels = Object.keys(TUTORIAL_LEVEL_LABELS);
+  expect(levels).toHaveLength(3);
+  for (const level of levels) {
     expect(
-      TUTORIAL_STEPS.filter((step) => step.level === group.level).length,
-      group.level,
+      TUTORIAL_STEPS.filter((step) => step.level === level).length,
+      level,
     ).toBeGreaterThanOrEqual(4);
   }
 });
