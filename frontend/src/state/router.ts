@@ -1,4 +1,4 @@
-export type Page = 'editor' | 'tutorial' | 'exercises';
+export type Page = 'editor' | 'tutorial' | 'exercises' | 'about';
 
 export interface Route {
   page: Page;
@@ -20,6 +20,9 @@ export interface Route {
  */
 export function parseRoute(pathname: string): Route {
   const segments = pathname.split('/').filter(Boolean);
+  if (segments[0] === 'about') {
+    return { page: 'about' };
+  }
   if (segments[0] === 'exercises') {
     return { page: 'exercises', exerciseId: segments[1] };
   }
@@ -39,6 +42,7 @@ export function parseRoute(pathname: string): Route {
  * @returns The path, always starting with a slash.
  */
 export function routePath(route: Route): string {
+  if (route.page === 'about') return '/about';
   if (route.page === 'exercises') {
     return route.exerciseId ? `/exercises/${route.exerciseId}` : '/exercises';
   }

@@ -39,6 +39,15 @@ test('each page has its own title and description', () => {
   expect(pageMetaFor('/exercises').description).toContain('Graded LaTeX');
 });
 
+test('the About is its own page, named by the server with no build beside it', () => {
+  expect(pageMetaFor('/about')).toStrictEqual({
+    path: '/about',
+    title: 'About — what renders the formulas, and under what licence',
+    description:
+      'What tex.cheminfo.org renders your formulas with, the borrowed work it stands on, its licence, and where to report a problem.',
+  });
+});
+
 test('a step and an exercise are named by the build, not by their parent', () => {
   const routes = [
     {
@@ -166,6 +175,9 @@ test('the crawl path links the pages relative to the mount', () => {
   );
   expect(html).toContain(
     '<li><a href="./exercises">Exercises</a> — practise by writing it</li>',
+  );
+  expect(html).toContain(
+    '<li><a href="./about">About</a> — what it is built on, and its licence</li>',
   );
   expect(html).toContain('<li><a href="./docs">API documentation</a></li>');
   // Its own host is never one of the family links it offers.

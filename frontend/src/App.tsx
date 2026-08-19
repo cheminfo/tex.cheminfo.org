@@ -1,7 +1,9 @@
 import { useSignals } from '@preact/signals-react/runtime';
+import { AboutPage } from 'react-cheminfo/ui';
 
 import './App.css';
 import './learn.css';
+import { ABOUT } from './about.ts';
 import { AppShell } from './components/AppShell.tsx';
 import { ShareDialog } from './components/ShareDialog.tsx';
 import { EditorPage } from './editor/EditorPage.tsx';
@@ -30,6 +32,11 @@ export default function App() {
 
   return (
     <AppShell>
+      {page === 'about' && (
+        <div className="about-scroll">
+          <AboutPage content={ABOUT} />
+        </div>
+      )}
       {page === 'tutorial' && <TutorialPage />}
       {page === 'exercises' && <ExercisesPage />}
       {page === 'editor' && <EditorPage />}

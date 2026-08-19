@@ -53,8 +53,14 @@ test('a step that is not a whole number is ignored', () => {
   });
 });
 
+test('the about path opens the About page', () => {
+  expect(parseRoute('/about')).toStrictEqual({ page: 'about' });
+  expect(parseRoute('/about/')).toStrictEqual({ page: 'about' });
+});
+
 test('a route writes back the path it was read from', () => {
   expect(routePath({ page: 'editor' })).toBe('/');
+  expect(routePath({ page: 'about' })).toBe('/about');
   expect(routePath({ page: 'exercises' })).toBe('/exercises');
   expect(routePath({ page: 'exercises', exerciseId: 'nernst' })).toBe(
     '/exercises/nernst',

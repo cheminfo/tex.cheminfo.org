@@ -20,6 +20,7 @@ import type { Exercise } from '../exercises/exerciseTypes.ts';
 import { TUTORIAL_STEPS } from '../tutorial/tutorialSteps.ts';
 
 import {
+  ABOUT_TITLE,
   EDITOR_TITLE,
   EXERCISES_TITLE,
   TUTORIAL_TITLE,
@@ -37,7 +38,7 @@ const DESCRIPTION_MAX = 160;
 const PROPER_NOUN = /^(?:Greek|Latin|LaTeX|MathJax)\b/;
 
 /**
- * The pages, the home page first. The three fixed ones are also described by
+ * The pages, the home page first. The four fixed ones are also described by
  * the backend's `pageMeta.ts`, for a server running with no build beside it —
  * change one and change the other.
  */
@@ -79,6 +80,12 @@ export const PAGE_ROUTES: readonly RouteMeta[] = [
       ),
     );
   }),
+  {
+    path: '/about',
+    title: ABOUT_TITLE,
+    description:
+      'What tex.cheminfo.org renders your formulas with, the borrowed work it stands on, its licence, and where to report a problem.',
+  },
 ];
 
 /**

@@ -12,6 +12,23 @@ test('the header carries the mark and the two-colour wordmark', async ({
   await expect(brand.locator('.wordmark__alt')).toHaveText('cheminfo');
 });
 
+test('About is the first utility, and it opens the page', async ({ page }) => {
+  await page.goto('/');
+
+  const utilities = page.locator('.app-header-actions > *');
+  await expect(utilities.first()).toHaveAttribute('href', '/about');
+
+  await utilities.first().click();
+
+  await expect(page).toHaveURL(/\/about$/);
+  await expect(page.locator('.about-page h1 .wordmark__lead')).toHaveText(
+    'tex',
+  );
+  await expect(page.locator('.about-can li')).toHaveCount(6);
+  await expect(page.locator('.about-credits .credits-list li')).toHaveCount(5);
+  await expect(page.getByRole('link', { name: 'MathJax' })).toBeVisible();
+});
+
 test('an embedded page renders no header', async ({ page }) => {
   await page.goto('/?embed=1&tex=x%5E2');
 

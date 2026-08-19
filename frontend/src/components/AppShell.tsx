@@ -1,6 +1,11 @@
 import { useSignals } from '@preact/signals-react/runtime';
 import type { ReactNode } from 'react';
-import { EcosystemButton, SiteFooter, SiteHeader } from 'react-cheminfo/ui';
+import {
+  EcosystemButton,
+  NavLink,
+  SiteFooter,
+  SiteHeader,
+} from 'react-cheminfo/ui';
 
 import { navigate, openShare, state } from '../state/index.ts';
 import { withBase } from '../state/site.ts';
@@ -52,6 +57,17 @@ export function AppShell({ children }: { children: ReactNode }) {
         nav={NAV}
         actions={
           <>
+            <NavLink
+              item={{
+                id: 'about',
+                label: 'About',
+                icon: 'info-sign',
+                href: withBase('/about'),
+                title: 'What this tool renders with, and what it borrows',
+                onSelect: () => navigate({ page: 'about' }),
+              }}
+              active={page === 'about'}
+            />
             <a
               className="nav-link"
               href={withBase('/docs')}

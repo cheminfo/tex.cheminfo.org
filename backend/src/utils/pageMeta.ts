@@ -51,6 +51,13 @@ const EXERCISES: RouteMeta = {
     'Graded LaTeX exercises with instant rendering: write the formula, see it appear, and have your answer checked against the expected one.',
 };
 
+const ABOUT: RouteMeta = {
+  path: '/about',
+  title: 'About — what renders the formulas, and under what licence',
+  description:
+    'What tex.cheminfo.org renders your formulas with, the borrowed work it stands on, its licence, and where to report a problem.',
+};
+
 /**
  * The pages the crawl path lists. It is a menu, not the route table: a step of
  * the tutorial and an exercise are reached from the page holding them, and the
@@ -71,6 +78,11 @@ const NOSCRIPT_ROUTES: readonly NoscriptRoute[] = [
     ...EXERCISES,
     short: 'Exercises',
     note: 'practise by writing it',
+  },
+  {
+    ...ABOUT,
+    short: 'About',
+    note: 'what it is built on, and its licence',
   },
   {
     path: '/docs',
@@ -174,6 +186,10 @@ export function pageMetaFor(
   if (named) return { ...named, path: pathname };
 
   const [, first, second] = pathname.split('/');
+
+  if (first === 'about') {
+    return { ...ABOUT };
+  }
 
   if (first === 'tutorial') {
     return { ...TUTORIAL, path: second ? `/tutorial/${second}` : '/tutorial' };
