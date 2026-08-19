@@ -1,5 +1,5 @@
 import { useSignals } from '@preact/signals-react/runtime';
-import { AboutPage } from 'react-cheminfo/ui';
+import { AboutPage, SiteTheme } from 'react-cheminfo/ui';
 
 import './App.css';
 import './learn.css';
@@ -31,23 +31,26 @@ export default function App() {
   const config = state.view.config.value;
 
   return (
-    <AppShell>
-      {page === 'about' && (
-        <div className="about-scroll">
-          <AboutPage content={ABOUT} />
-        </div>
-      )}
-      {page === 'tutorial' && <TutorialPage />}
-      {page === 'exercises' && <ExercisesPage />}
-      {page === 'editor' && <EditorPage />}
+    <>
+      <SiteTheme siteId="tex" />
+      <AppShell>
+        {page === 'about' && (
+          <div className="about-scroll">
+            <AboutPage content={ABOUT} />
+          </div>
+        )}
+        {page === 'tutorial' && <TutorialPage />}
+        {page === 'exercises' && <ExercisesPage />}
+        {page === 'editor' && <EditorPage />}
 
-      {state.view.sharing.value && (
-        <ShareDialog
-          initialConfig={draftFrom(config)}
-          href={window.location.href}
-          onClose={closeShare}
-        />
-      )}
-    </AppShell>
+        {state.view.sharing.value && (
+          <ShareDialog
+            initialConfig={draftFrom(config)}
+            href={window.location.href}
+            onClose={closeShare}
+          />
+        )}
+      </AppShell>
+    </>
   );
 }

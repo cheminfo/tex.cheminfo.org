@@ -1,16 +1,12 @@
 /* The neutrals, the geometry, the type, the bar and the footer of the family. */
 @import 'react-cheminfo/styles/chrome.css';
 
+/*
+  The two colours this site owns are not written here: `SiteTheme` puts them on
+  the page from the ecosystem record, so the mark, the wordmark, the current
+  page and the tile every sibling site shows are one declaration.
+*/
 :root {
-  /* The two colours this site owns. */
-  --brand: #a21caf;
-  --brand-alt: #ca8a04;
-  /* #ca8a04 sits at ~2.9:1 on white, too light for text — this is the same
-     hue darkened to 4.6:1, used for the wordmark and any coloured label. */
-  --brand-alt-text: #a16207;
-
-  --accent: var(--brand);
-
   --danger: #dc2626;
   --success: #16a34a;
   --warning: #d97706;
