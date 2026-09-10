@@ -1,11 +1,12 @@
 import { useSignals } from '@preact/signals-react/runtime';
+import { isHidden } from 'react-cheminfo/core';
 
 import { ServerRenderPanel } from '../ServerRenderPanel.tsx';
 import { EmbedCode } from '../components/EmbedCode.tsx';
 import { PageLayout } from '../components/PageLayout.tsx';
 import { MathJaxRenderer } from '../shared/MathJaxRenderer.tsx';
 import { setZoom, state, writeTex } from '../state/index.ts';
-import { MAX_ZOOM, MIN_ZOOM, isHidden } from '../state/shareConfig.ts';
+import { MAX_ZOOM, MIN_ZOOM } from '../state/shareConfig.ts';
 
 import { LatexEditor } from './LatexEditor.tsx';
 

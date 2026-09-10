@@ -1,12 +1,9 @@
 import { useMemo, useState } from 'react';
+import { buildEmbedCode, buildShareUrl } from 'react-cheminfo/core';
 
 import './ShareDialog.css';
 import type { FeatureKey, ShareConfig } from '../state/shareConfig.ts';
-import {
-  HIDEABLE_FEATURES,
-  applyShareConfig,
-  serializeShareUrl,
-} from '../state/shareConfig.ts';
+import { SHARE_VOCABULARY } from '../state/shareConfig.ts';
 import { SHARE_FEATURES } from '../state/shareOptions.ts';
 
 interface ShareDialogProps {
@@ -31,24 +28,29 @@ export function ShareDialog({
   const [draft, setDraft] = useState<ShareConfig>(initialConfig);
 
   const url = useMemo(
-    () => serializeShareUrl(applyShareConfig(new URL(href), draft)),
+    () =>
+      buildShareUrl({
+        base: href,
+        search: new URL(href).search,
+        config: draft,
+        vocabulary: SHARE_VOCABULARY,
+      }),
     [href, draft],
   );
 
-  const iframe = `<iframe
-  src="${url}"
-  width="100%"
-  height="700"
-  style="border: 1px solid #ddd; border-radius: 8px"
-  title="tex.cheminfo.org — LaTeX to SVG"
-></iframe>`;
+  const iframe = buildEmbedCode({
+    url,
+    title: 'tex.cheminfo.org — LaTeX to SVG',
+  });
 
   function toggleFeature(key: FeatureKey, visible: boolean) {
     setDraft((current) => ({
       ...current,
-      hide: HIDEABLE_FEATURES.filter((feature) =>
-        feature === key ? !visible : current.hide.includes(feature),
-      ),
+      hidden: SHARE_VOCABULARY.parts
+        .map((part) => part.key)
+        .filter((feature) =>
+          feature === key ? !visible : current.hidden.includes(feature),
+        ),
     }));
   }
 
@@ -98,7 +100,7 @@ export function ShareDialog({
             <label className="share-option" key={feature.key}>
               <input
                 type="checkbox"
-                checked={!draft.hide.includes(feature.key)}
+                checked={!draft.hidden.includes(feature.key)}
                 onChange={(event) =>
                   toggleFeature(feature.key, event.target.checked)
                 }

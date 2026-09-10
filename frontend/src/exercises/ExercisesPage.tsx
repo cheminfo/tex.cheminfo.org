@@ -1,5 +1,6 @@
 import { useSignals } from '@preact/signals-react/runtime';
 import { useState } from 'react';
+import { isHidden } from 'react-cheminfo/core';
 
 import { PageLayout } from '../components/PageLayout.tsx';
 import {
@@ -9,7 +10,6 @@ import {
   updateProgress,
 } from '../state/index.ts';
 import type { FeatureKey } from '../state/shareConfig.ts';
-import { isHidden } from '../state/shareConfig.ts';
 
 import { ExerciseCard } from './ExerciseCard.tsx';
 import { SeriesNav } from './SeriesNav.tsx';

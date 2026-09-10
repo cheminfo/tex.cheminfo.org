@@ -21,8 +21,8 @@ import { TutorialPage } from './tutorial/TutorialPage.tsx';
  * @returns The configuration the dialog opens on.
  */
 function draftFrom(config: ShareConfig): ShareConfig {
-  if (config.embed || config.hide.length > 0) return config;
-  return { ...config, embed: true, hide: DEFAULT_EMBED_HIDDEN };
+  if (config.embed || config.hidden.length > 0) return config;
+  return { ...config, embed: true, hidden: DEFAULT_EMBED_HIDDEN };
 }
 
 export default function App() {

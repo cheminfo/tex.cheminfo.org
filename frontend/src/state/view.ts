@@ -1,11 +1,12 @@
 import { signal } from '@preact/signals-react';
+import { parseShareConfig } from 'react-cheminfo/core';
 
 import { resolveRoute } from './address.ts';
 import { preferences } from './preferences.ts';
 import type { Route } from './router.ts';
 import { parseRoute, routePath } from './router.ts';
 import type { ShareConfig } from './shareConfig.ts';
-import { parseShareConfig } from './shareConfig.ts';
+import { SHARE_VOCABULARY } from './shareConfig.ts';
 import { pathWithoutBase, withBase } from './site.ts';
 
 /**
@@ -17,7 +18,7 @@ export const view = {
   /** The page on screen, read from the address and written back to it. */
   route: signal<Route>(parseRoute(pathname())),
   /** What the link asked to hide, and whether it asked to be framed. */
-  config: signal<ShareConfig>(parseShareConfig(search())),
+  config: signal<ShareConfig>(parseShareConfig(search(), SHARE_VOCABULARY)),
   /** Whether the share dialog is open. */
   sharing: signal(false),
   editor: {
@@ -94,7 +95,7 @@ export function startRouting(): void {
   // A link carrying a zoom overrides the stored preference: what the author of
   // the link is looking at is what the reader must see.
   const zoom = searchParameter('zoom');
-  if (zoom) preferences.zoom.value = view.config.peek().zoom;
+  if (zoom) preferences.zoom.value = view.config.peek().params.zoom;
 
   globalThis.addEventListener?.('popstate', () => {
     view.route.value = resolveRoute(parseRoute(pathname()));

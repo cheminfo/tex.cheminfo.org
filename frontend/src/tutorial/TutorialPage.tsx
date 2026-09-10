@@ -1,11 +1,11 @@
 import { useSignals } from '@preact/signals-react/runtime';
+import { isHidden } from 'react-cheminfo/core';
 
 import { PageLayout } from '../components/PageLayout.tsx';
 import { LatexEditor } from '../editor/LatexEditor.tsx';
 import { MathJaxRenderer } from '../shared/MathJaxRenderer.tsx';
 import { state, writeDraft } from '../state/index.ts';
 import type { FeatureKey } from '../state/shareConfig.ts';
-import { isHidden } from '../state/shareConfig.ts';
 
 import { GlossaryText } from './GlossaryText.tsx';
 import { StepNavigator } from './StepNavigator.tsx';

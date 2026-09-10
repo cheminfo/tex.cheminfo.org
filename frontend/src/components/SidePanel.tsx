@@ -1,11 +1,11 @@
 import { useState } from 'react';
+import { isHidden } from 'react-cheminfo/core';
 
 import { ExamplesPanel } from '../ExamplesPanel.tsx';
 import { HelpPanel } from '../HelpPanel.tsx';
 import { LatexCommands } from '../reference/LatexCommands.tsx';
 import { LatexDocs } from '../reference/LatexDocs.tsx';
 import type { FeatureKey, ShareConfig } from '../state/shareConfig.ts';
-import { isHidden } from '../state/shareConfig.ts';
 
 const TABS: ReadonlyArray<{ key: FeatureKey; label: string }> = [
   { key: 'examples', label: 'Examples' },
