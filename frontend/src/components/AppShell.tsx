@@ -51,6 +51,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <>
       <SiteHeader
         siteId="tex"
+        width="full"
         homeHref={withBase('/')}
         onHome={() => navigate({ page: 'editor' })}
         activeId={page}
@@ -91,7 +92,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         }
       />
       <div className="app-main">{children}</div>
-      <SiteFooter siteId="tex" />
+      <SiteFooter siteId="tex" width="full" />
     </>
   );
 }
