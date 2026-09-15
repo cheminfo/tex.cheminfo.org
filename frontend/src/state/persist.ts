@@ -1,32 +1,25 @@
 import { effect } from '@preact/signals-react';
+import { persistBucket } from 'react-cheminfo/core';
 
 /**
- * Rehydrate a bucket of signals from one namespaced localStorage entry, and
- * re-serialize the whole bucket whenever any leaf changes.
+ * Rehydrate a tree of signals from one namespaced localStorage entry, and
+ * re-serialize the whole tree whenever any leaf changes.
  *
- * Best-effort on both sides: a page framed in a course may have no storage at
- * all — third-party storage is partitioned in Chrome and blocked in Safari —
- * and losing a preference must never break the page.
- * @param key - Namespaced and versioned localStorage key.
- * @param bucket - Plain object whose leaves are signals.
- * @returns The same bucket, rehydrated and kept in sync with storage.
+ * The entry itself — its version suffix, the reads that may find nothing and
+ * the writes a full store refuses — is the ecosystem's `persistBucket`; what
+ * is added here is the binding to signals, which it knows nothing about.
+ * @param key - Name of the bucket, namespaced by the site and without its
+ * version.
+ * @param tree - Plain object whose leaves are signals.
+ * @returns The same tree, rehydrated and kept in sync with storage.
  */
-export function persistBucket<T extends object>(key: string, bucket: T): T {
-  try {
-    const stored = globalThis.localStorage?.getItem(key);
-    if (stored) rehydrate(bucket, JSON.parse(stored));
-  } catch {
-    // Malformed or inaccessible storage: start from the defaults.
-  }
+export function persistSignals<T extends object>(key: string, tree: T): T {
+  const bucket = persistBucket({ key, defaults: serialize(tree) });
+  rehydrate(tree, bucket.read().value);
   effect(() => {
-    const serialized = JSON.stringify(serialize(bucket));
-    try {
-      globalThis.localStorage?.setItem(key, serialized);
-    } catch {
-      // Quota exceeded: the preference simply does not survive the reload.
-    }
+    bucket.write(serialize(tree));
   });
-  return bucket;
+  return tree;
 }
 
 interface SignalLeaf {
@@ -43,15 +36,14 @@ function isSignalLeaf(value: unknown): value is SignalLeaf {
   );
 }
 
-function rehydrate(node: object, stored: unknown): void {
-  if (typeof stored !== 'object' || stored === null) return;
+function rehydrate(node: object, stored: Record<string, unknown>): void {
   for (const [property, leaf] of Object.entries(node)) {
-    const storedValue = (stored as Record<string, unknown>)[property];
+    const storedValue = stored[property];
     if (storedValue === undefined) continue;
     if (isSignalLeaf(leaf)) {
       leaf.value = storedValue;
     } else if (typeof leaf === 'object') {
-      rehydrate(leaf as object, storedValue);
+      rehydrate(leaf as object, storedValue as Record<string, unknown>);
     }
   }
 }

@@ -1,4 +1,8 @@
-import { aboutProblems, resolveAbout } from 'react-cheminfo/core';
+import {
+  PLATFORM_WORK,
+  aboutProblems,
+  resolveAbout,
+} from 'react-cheminfo/core';
 import { expect, test } from 'vitest';
 
 import { ABOUT } from '../about.ts';
@@ -30,8 +34,8 @@ test('the About credits every borrowed work the site runs on', () => {
   ).toStrictEqual(['Apache-2.0', 'Apache-2.0', 'MIT', 'MIT', 'MIT']);
 });
 
-test('the About asks for no citation of its own', () => {
-  expect(ABOUT.cite).toBeUndefined();
+test('the About asks for the platform paper alone', () => {
+  expect(ABOUT.cite).toStrictEqual([PLATFORM_WORK]);
   expect(resolveAbout(ABOUT).repository).toBe(
     'https://github.com/cheminfo/tex.cheminfo.org',
   );

@@ -1,4 +1,5 @@
 import { computed } from '@preact/signals-react';
+import { progressSummary } from 'react-cheminfo/core';
 
 import {
   ALL_EXERCISES,
@@ -23,6 +24,8 @@ const currentProgress = computed(() =>
 
 const stepIndex = computed(() => clampStep(view.route.value.step));
 
+const EXERCISE_IDS = ALL_EXERCISES.map((exercise) => exercise.id);
+
 /**
  * What the page is about, derived from the address and from what the student
  * has done. Nothing here is written to, and nothing here is stored.
@@ -42,15 +45,13 @@ export const data = {
     check: computed(() =>
       checkAnswer(currentProgress.value.answer, currentExercise.value),
     ),
-    /** How many exercises have been solved, out of them all. */
-    solvedCount: computed(() => {
-      const progress = preferences.exercises.progress.value;
-      let solved = 0;
-      for (const exercise of ALL_EXERCISES) {
-        if (progress[exercise.id]?.status === 'solved') solved++;
-      }
-      return solved;
-    }),
+    /**
+     * How far through the whole set the student is. Counted against every
+     * exercise, so the bar cannot sit at 100% after one answer.
+     */
+    summary: computed(() =>
+      progressSummary(preferences.exercises.progress.value, EXERCISE_IDS),
+    ),
   },
   tutorial: {
     /** The step the address names, counted from 0 and clamped to the tour. */

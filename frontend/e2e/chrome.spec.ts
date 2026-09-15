@@ -67,10 +67,10 @@ test('the share dialog opens on an embed link carrying the formula', async ({
 
   await page.getByRole('button', { name: 'Share' }).click();
 
-  const dialog = page.getByTestId('share-dialog');
+  const dialog = page.locator('.share-dialog');
   await expect(dialog).toBeVisible();
 
-  const link = dialog.locator('.share-code').first();
+  const link = dialog.locator('.code-block').first();
   await expect(link).toContainText('tex=x%5E2');
   await expect(link).toContainText('embed=1');
   await expect(link).toContainText('hide=embedCode');
@@ -82,10 +82,13 @@ test('unchecking embed drops the parameter from the shared link', async ({
   await page.goto('/?tex=x%5E2');
 
   await page.getByRole('button', { name: 'Share' }).click();
-  const dialog = page.getByTestId('share-dialog');
-  await dialog.getByRole('checkbox').first().uncheck();
+  const dialog = page.locator('.share-dialog');
+  // Blueprint hides the input behind its own indicator, which swallows a click
+  // aimed at the box; the label is what a reader presses anyway.
+  await dialog.getByText('Embed in another page', { exact: true }).click();
+  await expect(dialog.getByRole('checkbox').first()).not.toBeChecked();
 
-  await expect(dialog.locator('.share-code').first()).not.toContainText(
+  await expect(dialog.locator('.code-block').first()).not.toContainText(
     'embed=1',
   );
 });

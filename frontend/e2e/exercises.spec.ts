@@ -14,7 +14,8 @@ test('an exercise link opens that exercise', async ({ page }) => {
   await page.goto('/exercises/nernst');
 
   await expect(page.getByText('The Nernst equation')).toBeVisible();
-  await expect(page.locator('.level-tag')).toHaveText('advanced');
+  // The difficulty is the shared ExerciseLevelTag, a Blueprint tag.
+  await expect(page.locator('.exercise .bp6-tag')).toHaveText('advanced');
 });
 
 test('a correct answer written differently is still solved', async ({
@@ -40,8 +41,8 @@ test('a wrong answer is marked only once checked, and hints come one at a time',
   await page.getByRole('button', { name: 'Check' }).click();
   await expect(page.locator('.feedback-wrong')).toBeVisible();
 
-  await page.getByRole('button', { name: /^Hint \(0\/2\)$/ }).click();
-  await expect(page.locator('.hint-list li')).toHaveCount(1);
+  await page.getByRole('button', { name: /^Reveal hint \(0\/2\)$/ }).click();
+  await expect(page.locator('.hint-block li')).toHaveCount(1);
 });
 
 test('a broken formula reports what MathJax could not read', async ({
@@ -60,7 +61,7 @@ test('a broken formula reports what MathJax could not read', async ({
 test('the solution can be revealed', async ({ page }) => {
   await page.goto('/exercises/one-half');
 
-  await page.getByRole('button', { name: 'Show solution' }).click();
+  await page.getByRole('button', { name: 'Reveal solution' }).click();
 
   await expect(page.locator('.solution-code')).toHaveText(
     String.raw`\frac{1}{2}`,

@@ -53,12 +53,18 @@
 }
 
 @media (width <= 60rem) {
+  /* The page scrolls as a whole here, so the column no longer scrolls on its
+     own, and its end keeps room for the Reference button floating over it. */
   .panel-middle {
+    overflow: visible;
+    padding-bottom: 4.5rem;
     border-right: none;
   }
 
+  /* Pinned to the screen rather than to the page, which is now taller than
+     it. Hidden once slid away, so its tabs are not reached by the keyboard. */
   .panel-right {
-    position: absolute;
+    position: fixed;
     z-index: 30;
     top: 0;
     right: 0;
@@ -67,15 +73,28 @@
     border-left: 1px solid var(--border-strong);
     box-shadow: var(--shadow-lg);
     transform: translateX(100%);
-    transition: transform 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      visibility 0.2s;
+    visibility: hidden;
   }
 
   .panel-right--open {
     transform: none;
+    visibility: visible;
+  }
+
+  /* Four tabs do not fit a phone: they scroll, and the close button stays. */
+  .tab-bar {
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    flex: none;
   }
 
   .panel-backdrop {
-    position: absolute;
+    position: fixed;
     z-index: 25;
     display: block;
     border: none;
@@ -85,7 +104,7 @@
   }
 
   .panel-toggle {
-    position: absolute;
+    position: fixed;
     z-index: 20;
     right: 14px;
     bottom: 14px;
@@ -108,15 +127,19 @@
     height: 15px;
   }
 
+  /* Sticky, so it stays at the edge while the tabs beside it scroll. */
   .panel-close {
+    position: sticky;
+    right: 0;
     display: inline-flex;
     width: 34px;
+    flex: none;
     align-items: center;
     justify-content: center;
     padding: 0;
     border: none;
     margin-left: auto;
-    background: transparent;
+    background: var(--surface-sunken);
     color: var(--text-muted);
     cursor: pointer;
     font-size: 20px;
@@ -325,35 +348,6 @@
   resize: none;
 }
 
-.copy-btn {
-  display: flex;
-  width: 38px;
-  height: 38px;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
-  background: var(--surface);
-  color: var(--text);
-  cursor: pointer;
-  font-size: 17px;
-  transition:
-    background 0.15s,
-    color 0.15s;
-}
-
-.copy-btn:hover {
-  background: var(--surface-sunken);
-  color: var(--accent);
-}
-
-.copy-btn.copied {
-  border-color: var(--success);
-  background: color-mix(in oklab, var(--success) 16%, white);
-  color: var(--success);
-}
-
 .guide-link {
   color: var(--accent);
   font-size: 13px;
@@ -441,4 +435,46 @@
   background: color-mix(in oklab, var(--success) 16%, white);
   color: var(--success);
   cursor: default;
+}
+
+/* ── A narrow screen ─────────────────────────────────────── */
+/* After the About rule above, which would otherwise keep its own scrolling
+   box inside a page that now scrolls as a whole. */
+@media (width <= 60rem) {
+  .about-scroll {
+    overflow: visible;
+  }
+}
+
+/* A phone: one small gutter at the screen edge rather than a border, a column
+   padding and a section padding stacked, and section heads whose buttons wrap
+   instead of running off the card. */
+@media (width <= 40rem) {
+  .layout {
+    border-inline: none;
+  }
+
+  .panel-middle {
+    padding: 8px 8px 4.5rem;
+    gap: 8px;
+  }
+
+  .about-scroll {
+    padding: 8px;
+  }
+
+  .section-head {
+    flex-wrap: wrap;
+    padding: 8px 10px;
+    gap: 6px 10px;
+  }
+
+  .section-body {
+    padding: 10px;
+  }
+
+  .icon-btns {
+    flex-wrap: wrap;
+    flex-shrink: 1;
+  }
 }

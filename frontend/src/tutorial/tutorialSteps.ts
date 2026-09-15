@@ -1,4 +1,4 @@
-import type { Level } from '../exercises/exerciseTypes.ts';
+import type { ExerciseLevel } from 'react-cheminfo/core';
 
 /**
  * One stop in the guided tour. The description may carry `[[term]]` markers
@@ -12,14 +12,14 @@ export interface TutorialStep {
   title: string;
   description: string;
   tex: string;
-  level: Level;
+  level: ExerciseLevel;
 }
 
 /**
  * What each of the three coloured strips is called on this course. The colours
  * and the layout are the ecosystem's, and come with `TutorialStepStrip`.
  */
-export const TUTORIAL_LEVEL_LABELS: Record<Level, string> = {
+export const TUTORIAL_LEVEL_LABELS: Record<ExerciseLevel, string> = {
   beginner: 'Reading and writing a formula',
   intermediate: 'Operators, functions and spacing',
   advanced: 'Structures, chemistry and images',

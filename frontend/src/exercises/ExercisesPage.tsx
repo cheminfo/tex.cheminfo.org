@@ -1,6 +1,6 @@
 import { useSignals } from '@preact/signals-react/runtime';
-import { useState } from 'react';
 import { isHidden } from 'react-cheminfo/core';
+import { ExerciseProgressHeader } from 'react-cheminfo/ui';
 
 import { PageLayout } from '../components/PageLayout.tsx';
 import {
@@ -25,11 +25,10 @@ const HELP_TABS: readonly FeatureKey[] = ['reference', 'commands', 'help'];
  */
 export function ExercisesPage() {
   useSignals();
-  const [confirmingClear, setConfirmingClear] = useState(false);
 
   const exercise = state.data.exercises.current.value;
   const progress = state.data.exercises.currentProgress.value;
-  const solvedCount = state.data.exercises.solvedCount.value;
+  const summary = state.data.exercises.summary.value;
   const config = state.view.config.value;
 
   const index = ALL_EXERCISES.findIndex((item) => item.id === exercise.id);
@@ -46,47 +45,12 @@ export function ExercisesPage() {
         <div className="section">
           <div className="section-head">
             <span className="section-label">Exercises</span>
-            <span className="section-note">
-              {solvedCount} of {ALL_EXERCISES.length} solved
-            </span>
-            <div className="progress-track">
-              <div
-                className="progress-fill"
-                style={{
-                  width: `${(solvedCount / ALL_EXERCISES.length) * 100}%`,
-                }}
-              />
-            </div>
-            {confirmingClear ? (
-              <span className="confirm-row">
-                Clear every answer?
-                <button
-                  type="button"
-                  className="btn btn-danger"
-                  onClick={() => {
-                    clearProgress();
-                    setConfirmingClear(false);
-                  }}
-                >
-                  Clear
-                </button>
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={() => setConfirmingClear(false)}
-                >
-                  Cancel
-                </button>
-              </span>
-            ) : (
-              <button
-                type="button"
-                className="btn"
-                onClick={() => setConfirmingClear(true)}
-              >
-                Clear all
-              </button>
-            )}
+            <ExerciseProgressHeader
+              className="exercise-progress"
+              summary={summary}
+              onClearAll={clearProgress}
+              clearDisabled={summary.solved + summary.attempted === 0}
+            />
           </div>
           <div className="section-body">
             <SeriesNav />

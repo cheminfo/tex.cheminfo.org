@@ -47,24 +47,39 @@ a {
   color: var(--accent);
 }
 
-/* The tool takes the screen it is opened on: one screenful below the header,
+/* The header and the tool take the screen they are opened on, the tool
    scrolling inside itself. The family links sit under the fold. */
+.app-screen {
+  display: flex;
+  height: 100dvh;
+  flex-direction: column;
+}
+
 .app-main {
   display: flex;
-  height: calc(100dvh - var(--header-height));
+  min-height: 0;
+  flex: 1 1 1px;
   flex-direction: column;
+  overflow: auto;
+}
+
+/* Once the reference is a drawer rather than a column, a tool scrolling inside
+   a box shorter than the screen is hard to work in: the page scrolls as a
+   whole, and the footer still starts below the fold. */
+@media (width <= 60rem) {
+  .app-screen {
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .app-main {
+    flex: 1 0 auto;
+    overflow: visible;
+  }
 }
 
 /* The family, in the page rather than only behind the Tools button: this is
    what lets a crawler — and a reader — walk from one of our tools to the next. */
 .app-footer {
-  border-top: 1px solid var(--border);
   margin-top: 2rem;
-  background: var(--surface);
-}
-
-.app-footer__inner {
-  max-width: var(--page-max);
-  padding: 1.25rem;
-  margin: 0 auto;
 }

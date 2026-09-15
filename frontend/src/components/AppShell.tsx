@@ -1,12 +1,15 @@
 import { useSignals } from '@preact/signals-react/runtime';
 import type { ReactNode } from 'react';
 import {
+  CiteButton,
   EcosystemButton,
   NavLink,
+  ShareButton,
   SiteFooter,
   SiteHeader,
 } from 'react-cheminfo/ui';
 
+import { ABOUT } from '../about.ts';
 import { navigate, openShare, state } from '../state/index.ts';
 import { withBase } from '../state/site.ts';
 
@@ -49,69 +52,46 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <SiteHeader
-        siteId="tex"
-        width="full"
-        homeHref={withBase('/')}
-        onHome={() => navigate({ page: 'editor' })}
-        activeId={page}
-        nav={NAV}
-        actions={
-          <>
-            <NavLink
-              item={{
-                id: 'about',
-                label: 'About',
-                icon: 'info-sign',
-                href: withBase('/about'),
-                title: 'What this tool renders with, and what it borrows',
-                onSelect: () => navigate({ page: 'about' }),
-              }}
-              active={page === 'about'}
-            />
-            <a
-              className="nav-link"
-              href={withBase('/docs')}
-              target="_blank"
-              rel="noreferrer"
-              title="OpenAPI documentation for the rendering API"
-            >
-              API
-            </a>
-            <EcosystemButton currentSiteId="tex" />
-            <button
-              type="button"
-              className="nav-link"
-              onClick={openShare}
-              title="Share a link to this page, or embed it in your own site"
-            >
-              <ShareIcon />
-              Share
-            </button>
-          </>
-        }
-      />
-      <div className="app-main">{children}</div>
+      <div className="app-screen">
+        <SiteHeader
+          siteId="tex"
+          width="full"
+          homeHref={withBase('/')}
+          onHome={() => navigate({ page: 'editor' })}
+          activeId={page}
+          nav={NAV}
+          actions={
+            <>
+              <NavLink
+                item={{
+                  id: 'about',
+                  label: 'About',
+                  icon: 'info-sign',
+                  href: withBase('/about'),
+                  title: 'What this tool renders with, and what it borrows',
+                  onSelect: () => navigate({ page: 'about' }),
+                }}
+                active={page === 'about'}
+              />
+              {ABOUT.cite ? <CiteButton works={ABOUT.cite} /> : null}
+              <NavLink
+                item={{
+                  id: 'api',
+                  label: 'API',
+                  icon: 'code',
+                  href: withBase('/docs'),
+                  external: true,
+                  title: 'OpenAPI documentation for the rendering API',
+                }}
+              />
+              <EcosystemButton currentSiteId="tex" />
+              <ShareButton onClick={openShare} />
+            </>
+          }
+        />
+        <div className="app-main">{children}</div>
+      </div>
       <SiteFooter siteId="tex" width="full" />
     </>
-  );
-}
-
-function ShareIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <circle cx="18" cy="5" r="3" />
-      <circle cx="6" cy="12" r="3" />
-      <circle cx="18" cy="19" r="3" />
-      <path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4" />
-    </svg>
   );
 }

@@ -1,4 +1,5 @@
 import type { AboutContent } from 'react-cheminfo/core';
+import { PLATFORM_WORK } from 'react-cheminfo/core';
 
 /**
  * What this site says about itself, drawn by `AboutPage` from
@@ -17,7 +18,8 @@ export const ABOUT: AboutContent = {
   ],
   paragraphs: [
     'MathJax 3 renders both the preview in your browser and the image the server hands out, so the two agree. The API is a stateless GET: /v1/?tex=E%3Dmc%5E2 returns the image, and nothing is stored.',
-    'It replaces the tex.cheminfo.org service that ran before it, so the ?tex= links and bookmarks already written against that one still open here.',
+    'Every ?tex= link or bookmark pointing at tex.cheminfo.org opens here.',
   ],
   credits: ['mathjax', 'blueprint', 'react-cheminfo', 'react', 'vite'],
+  cite: [PLATFORM_WORK],
 };

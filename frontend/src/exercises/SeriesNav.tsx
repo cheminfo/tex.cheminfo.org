@@ -1,9 +1,15 @@
 import { useSignals } from '@preact/signals-react/runtime';
+import { ExerciseStatusIcon } from 'react-cheminfo/ui';
 
 import { navigate, state } from '../state/index.ts';
 
 import { EXERCISE_SERIES } from './exerciseSeries.ts';
-import type { ExerciseProgress } from './progress.ts';
+
+/**
+ * Size of the status glyph inside a numbered button — the button is 28px, so
+ * the standard 16 would crowd the number out.
+ */
+const DOT_SIZE = 10;
 
 /**
  * The series, each as a strip of numbered exercises: what has been solved, what
@@ -39,7 +45,9 @@ export function SeriesNav() {
                   }
                 >
                   {index + 1}
-                  <StatusDot progress={progress[exercise.id]} />
+                  {status !== 'idle' && (
+                    <ExerciseStatusIcon status={status} size={DOT_SIZE} />
+                  )}
                 </button>
               );
             })}
@@ -48,22 +56,4 @@ export function SeriesNav() {
       ))}
     </div>
   );
-}
-
-function StatusDot({ progress }: { progress: ExerciseProgress | undefined }) {
-  if (progress?.status === 'solved') {
-    return (
-      <span className="series-dot" aria-label="solved">
-        ✓
-      </span>
-    );
-  }
-  if (progress?.status === 'attempted') {
-    return (
-      <span className="series-dot" aria-label="attempted">
-        •
-      </span>
-    );
-  }
-  return null;
 }

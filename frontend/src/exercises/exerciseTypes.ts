@@ -1,10 +1,10 @@
-export type Level = 'beginner' | 'intermediate' | 'advanced';
+import type { ExerciseLevel } from 'react-cheminfo/core';
 
 export interface Exercise {
   /** Stable, URL-safe; it is what `/exercises/<id>` carries. */
   id: string;
   title: string;
-  level: Level;
+  level: ExerciseLevel;
   /** What the student is asked to write, in one or two sentences. */
   prompt: string;
   /**
@@ -35,6 +35,6 @@ export interface ExerciseSeries {
   title: string;
   /** One line on what the series drills. */
   description: string;
-  level: Level;
+  level: ExerciseLevel;
   exercises: Exercise[];
 }

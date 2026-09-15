@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { CopyButton } from 'react-cheminfo/ui';
 
 import { buildRenderUrl } from '../shared/renderUrl.ts';
 
@@ -51,8 +51,6 @@ function EmbedCodeRow({
   title: string;
   value: string;
 }) {
-  const [copied, setCopied] = useState(false);
-
   return (
     <div className="code-row">
       <span className="code-format-label">{label}</span>
@@ -62,42 +60,7 @@ function EmbedCodeRow({
         readOnly
         value={value}
       />
-      <button
-        type="button"
-        className={`copy-btn ${copied ? 'copied' : ''}`}
-        title={title}
-        onClick={() => {
-          void navigator.clipboard
-            .writeText(value)
-            .then(() => {
-              setCopied(true);
-              setTimeout(() => setCopied(false), 1500);
-            })
-            .catch(() => setCopied(false));
-        }}
-      >
-        {copied ? '✓' : <CopyIcon />}
-      </button>
+      <CopyButton content={value} title={title} disabled={value === ''} />
     </div>
-  );
-}
-
-function CopyIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <rect x="9" y="2" width="10" height="13" rx="2" />
-      <path d="M5 6H4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1" />
-    </svg>
   );
 }

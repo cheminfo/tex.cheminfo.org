@@ -78,12 +78,13 @@ test('an answer that renders like the solution is marked solved', () => {
 });
 
 test('the solved count follows what is recorded', () => {
-  expect(state.data.exercises.solvedCount.value).toBe(0);
+  expect(state.data.exercises.summary.value.solved).toBe(0);
 
   updateProgress('x-squared', { status: 'solved' });
   updateProgress('one-half', { status: 'attempted' });
 
-  expect(state.data.exercises.solvedCount.value).toBe(1);
+  expect(state.data.exercises.summary.value.solved).toBe(1);
+  expect(state.data.exercises.summary.value.attempted).toBe(1);
 });
 
 test('clearing throws every answer away', () => {

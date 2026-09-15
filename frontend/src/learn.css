@@ -12,29 +12,8 @@
 }
 
 /* ── Progress ─────────────────────────────────────────────── */
-.progress-track {
-  overflow: hidden;
-  width: 140px;
-  height: 8px;
-  flex-shrink: 0;
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  background: var(--surface);
-}
-
-.progress-fill {
-  height: 100%;
-  background: var(--accent);
-  transition: width 0.2s;
-}
-
-.confirm-row {
-  display: flex;
-  align-items: center;
-  color: var(--text);
-  font-size: 12.5px;
-  font-weight: 600;
-  gap: 6px;
+.exercise-progress {
+  flex: 1;
 }
 
 /* ── Series strips ───────────────────────────────────────── */
@@ -125,27 +104,11 @@
   color: #fff;
 }
 
-.series-dot {
-  font-size: 10px;
-}
-
 /* ── One exercise ────────────────────────────────────────── */
 .exercise {
   display: flex;
   flex-direction: column;
   gap: 14px;
-}
-
-.level-tag {
-  padding: 2px 8px;
-  border: 1px solid color-mix(in srgb, var(--level) 45%, transparent);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--level) 14%, white);
-  color: color-mix(in oklab, var(--level) 78%, black);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 
 .solved-tag {
@@ -296,52 +259,9 @@
   cursor: default;
 }
 
-.btn-primary {
-  border-color: var(--accent);
-  background: var(--accent);
-  color: #fff;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: color-mix(in oklab, var(--accent) 85%, black);
-  color: #fff;
-}
-
-.btn-danger {
-  border-color: var(--danger);
-  background: var(--danger);
-  color: #fff;
-}
-
-.btn-danger:hover:not(:disabled) {
-  border-color: var(--danger);
-  background: color-mix(in oklab, var(--danger) 85%, black);
-  color: #fff;
-}
-
-.btn-next {
-  border-color: var(--brand-alt-text);
-  color: var(--brand-alt-text);
-}
-
-.btn-next:hover:not(:disabled) {
-  border-color: var(--brand-alt-text);
-  background: color-mix(in oklab, var(--brand-alt) 16%, white);
-  color: var(--brand-alt-text);
-}
-
 /* ── Hints and solution ──────────────────────────────────── */
-.hint-list {
-  padding-left: 20px;
-  border-left: 4px solid var(--brand-alt);
-  margin: 12px 0 0;
-  color: var(--text);
-  font-size: 13.5px;
-  line-height: 1.6;
-}
-
-.hint-list li {
-  margin: 3px 0;
+.hint-block:not(:empty) {
+  margin-top: 12px;
 }
 
 .solution-block {
@@ -360,6 +280,23 @@
   font-family: 'Fira Mono', 'Cascadia Code', Consolas, monospace;
   font-size: 13px;
   white-space: pre-wrap;
+}
+
+/* A phone: the numbers go under the name of their series rather than squeezing
+   it into a column of one word per line. */
+@media (width <= 40rem) {
+  .series-strip {
+    flex-wrap: wrap;
+    gap: 6px 12px;
+  }
+
+  .series-head {
+    flex: 1 1 100%;
+  }
+
+  .series-buttons {
+    flex-wrap: wrap;
+  }
 }
 
 /* The name of a step or an exercise: a title, not a section label. */

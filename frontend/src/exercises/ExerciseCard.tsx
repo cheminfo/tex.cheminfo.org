@@ -1,5 +1,11 @@
+import { Button } from '@blueprintjs/core';
 import { useSignals } from '@preact/signals-react/runtime';
 import { useState } from 'react';
+import {
+  ExerciseActions,
+  ExerciseLevelTag,
+  HintLadder,
+} from 'react-cheminfo/ui';
 
 import { LatexEditor } from '../editor/LatexEditor.tsx';
 import { MathJaxRenderer } from '../shared/MathJaxRenderer.tsx';
@@ -40,15 +46,11 @@ export function ExerciseCard({ onNext }: ExerciseCardProps) {
     });
   }
 
-  const hints = exercise.hints.slice(0, progress.hintsRevealed);
-
   return (
     <div className="exercise">
       <div className="section">
         <div className="section-head">
-          <span className={`level-tag level-${exercise.level}`}>
-            {exercise.level}
-          </span>
+          <ExerciseLevelTag level={exercise.level} />
           <span className="section-label step-title">{exercise.title}</span>
           <span className="section-note">{series.title}</span>
           {solved && <span className="solved-tag">✓ solved</span>}
@@ -105,70 +107,50 @@ export function ExerciseCard({ onNext }: ExerciseCardProps) {
             </p>
           )}
 
-          <div className="button-row">
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={() => {
-                setChecked(true);
-                if (!solved) {
-                  updateProgress(exercise.id, { status: 'attempted' });
-                }
-              }}
-            >
-              Check
-            </button>
-            <button
-              type="button"
-              className="btn"
-              disabled={progress.hintsRevealed >= exercise.hints.length}
-              onClick={() =>
-                updateProgress(exercise.id, {
-                  hintsRevealed: progress.hintsRevealed + 1,
-                })
+          <ExerciseActions
+            className="button-row"
+            onCheck={() => {
+              setChecked(true);
+              if (!solved) {
+                updateProgress(exercise.id, { status: 'attempted' });
               }
-            >
-              Hint ({progress.hintsRevealed}/{exercise.hints.length})
-            </button>
-            <button
-              type="button"
-              className="btn"
-              onClick={() =>
-                updateProgress(exercise.id, {
-                  showSolution: !progress.showSolution,
-                })
-              }
-            >
-              {progress.showSolution ? 'Hide solution' : 'Show solution'}
-            </button>
-            <button
-              type="button"
-              className="btn"
-              onClick={() => {
-                setChecked(false);
-                updateProgress(exercise.id, {
-                  ...EMPTY_PROGRESS,
-                  answer: exercise.starter ?? '',
-                });
-              }}
-            >
-              Reset
-            </button>
-            <span className="spacer" />
+            }}
+            onRevealHint={() =>
+              updateProgress(exercise.id, {
+                hintsRevealed: progress.hintsRevealed + 1,
+              })
+            }
+            hintsRevealed={progress.hintsRevealed}
+            hintCount={exercise.hints.length}
+            onToggleSolution={() =>
+              updateProgress(exercise.id, {
+                showSolution: !progress.showSolution,
+              })
+            }
+            showSolution={progress.showSolution}
+            onReset={() => {
+              setChecked(false);
+              updateProgress(exercise.id, {
+                ...EMPTY_PROGRESS,
+                answer: exercise.starter ?? '',
+              });
+            }}
+          >
             {onNext && (
-              <button type="button" className="btn btn-next" onClick={onNext}>
-                Next exercise →
-              </button>
+              <Button
+                icon="arrow-right"
+                text="Next exercise"
+                onClick={onNext}
+              />
             )}
-          </div>
+          </ExerciseActions>
 
-          {hints.length > 0 && (
-            <ol className="hint-list">
-              {hints.map((hint) => (
-                <li key={hint}>{hint}</li>
-              ))}
-            </ol>
-          )}
+          <div className="hint-block">
+            <HintLadder
+              hints={exercise.hints}
+              revealed={progress.hintsRevealed}
+            />
+          </div>
 
           {progress.showSolution && (
             <div className="solution-block">

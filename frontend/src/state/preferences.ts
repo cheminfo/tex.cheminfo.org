@@ -1,21 +1,21 @@
 import { signal } from '@preact/signals-react';
+import type { ExerciseProgress, ProgressRecords } from 'react-cheminfo/core';
 
-import type { ExerciseProgress, ProgressMap } from '../exercises/progress.ts';
 import { EMPTY_PROGRESS, mergeProgress } from '../exercises/progress.ts';
 
-import { persistBucket } from './persist.ts';
+import { persistSignals } from './persist.ts';
 import { DEFAULT_ZOOM, MAX_ZOOM, MIN_ZOOM } from './shareConfig.ts';
 
 /**
  * What a student chose and what a student did: the only bucket that survives a
  * reload. Persisted as one entry, so the stored shape mirrors this tree.
  */
-export const preferences = persistBucket('tex.cheminfo.org:preferences:v1', {
+export const preferences = persistSignals('tex.cheminfo.org:preferences', {
   /** Preview magnification, shared by the editor and the previews. */
   zoom: signal(DEFAULT_ZOOM),
   exercises: {
     /** What has been written, attempted and solved, keyed by exercise. */
-    progress: signal<ProgressMap>({}),
+    progress: signal<ProgressRecords>({}),
   },
 });
 

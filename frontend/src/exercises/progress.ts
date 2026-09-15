@@ -1,16 +1,10 @@
-export type ExerciseStatus = 'idle' | 'attempted' | 'solved';
+import type {
+  ExerciseProgress,
+  ExerciseStatus,
+  ProgressRecords,
+} from 'react-cheminfo/core';
 
-export interface ExerciseProgress {
-  /** What the student last had in the editor. */
-  answer: string;
-  status: ExerciseStatus;
-  /** How many hints were revealed, so the count survives a reload. */
-  hintsRevealed: number;
-  showSolution: boolean;
-}
-
-export type ProgressMap = Record<string, ExerciseProgress>;
-
+/** The record an exercise nobody has opened starts from. */
 export const EMPTY_PROGRESS: ExerciseProgress = {
   answer: '',
   status: 'idle',
@@ -24,9 +18,9 @@ export const EMPTY_PROGRESS: ExerciseProgress = {
  * @param stored - The parsed contents of the storage entry.
  * @returns The progress map to start from.
  */
-export function mergeProgress(stored: unknown): ProgressMap {
+export function mergeProgress(stored: unknown): ProgressRecords {
   if (typeof stored !== 'object' || stored === null) return {};
-  const merged: ProgressMap = {};
+  const merged: ProgressRecords = {};
   for (const [id, value] of Object.entries(stored as Record<string, unknown>)) {
     if (typeof value !== 'object' || value === null) continue;
     const entry = value as Partial<ExerciseProgress>;

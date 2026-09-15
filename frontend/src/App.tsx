@@ -1,55 +1,42 @@
 import { useSignals } from '@preact/signals-react/runtime';
-import { AboutPage, SiteTheme } from 'react-cheminfo/ui';
+import { AboutPage, ShareDialog, SiteTheme } from 'react-cheminfo/ui';
 
 import './App.css';
 import './learn.css';
 import { ABOUT } from './about.ts';
 import { AppShell } from './components/AppShell.tsx';
-import { ShareDialog } from './components/ShareDialog.tsx';
 import { EditorPage } from './editor/EditorPage.tsx';
 import { ExercisesPage } from './exercises/ExercisesPage.tsx';
 import { closeShare, state } from './state/index.ts';
-import type { ShareConfig } from './state/shareConfig.ts';
-import { DEFAULT_EMBED_HIDDEN } from './state/shareOptions.ts';
+import { SHARE_VOCABULARY } from './state/shareConfig.ts';
 import { TutorialPage } from './tutorial/TutorialPage.tsx';
 
-/**
- * Open the dialog on the link the user would hand out: embedded, with the
- * features a host page has no use for already switched off. When the page is
- * itself running a configuration, start from that instead.
- * @param config - The configuration in force.
- * @returns The configuration the dialog opens on.
- */
-function draftFrom(config: ShareConfig): ShareConfig {
-  if (config.embed || config.hidden.length > 0) return config;
-  return { ...config, embed: true, hidden: DEFAULT_EMBED_HIDDEN };
-}
+/** How the page is named in the share dialog, and in the frame it writes. */
+const SHARE_TITLE = 'tex.cheminfo.org — LaTeX to SVG';
 
 export default function App() {
   useSignals();
   const { page } = state.view.route.value;
-  const config = state.view.config.value;
 
   return (
     <>
       <SiteTheme siteId="tex" />
       <AppShell>
         {page === 'about' && (
-          <div className="about-scroll">
+          <main className="about-scroll">
             <AboutPage content={ABOUT} />
-          </div>
+          </main>
         )}
         {page === 'tutorial' && <TutorialPage />}
         {page === 'exercises' && <ExercisesPage />}
         {page === 'editor' && <EditorPage />}
 
-        {state.view.sharing.value && (
-          <ShareDialog
-            initialConfig={draftFrom(config)}
-            href={window.location.href}
-            onClose={closeShare}
-          />
-        )}
+        <ShareDialog
+          isOpen={state.view.sharing.value}
+          onClose={closeShare}
+          vocabulary={SHARE_VOCABULARY}
+          title={SHARE_TITLE}
+        />
       </AppShell>
     </>
   );

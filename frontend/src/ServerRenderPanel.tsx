@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
+import { useDebouncedValue } from 'react-cheminfo/ui';
 
 interface Props {
   tex: string;
@@ -10,19 +11,19 @@ function flashCopied(setFlag: (value: boolean) => void): void {
   setTimeout(() => setFlag(false), 1500);
 }
 
+// Long enough that a formula is rendered once a phrase is finished, rather
+// than once per keystroke.
+const SETTLE_MS = 800;
+
 export function ServerRenderPanel({ tex, zoom }: Props) {
-  const [serverPreviewKey, setServerPreviewKey] = useState(0);
   const [copiedSvg, setCopiedSvg] = useState(false);
   const [copiedPng150, setCopiedPng150] = useState(false);
   const [copiedPng300, setCopiedPng300] = useState(false);
 
-  useEffect(() => {
-    const timer = setTimeout(() => setServerPreviewKey((k) => k + 1), 800);
-    return () => clearTimeout(timer);
-  }, [tex]);
+  const settledTex = useDebouncedValue(tex, SETTLE_MS);
 
-  const serverImgSrc = tex
-    ? `/v1/?tex=${encodeURIComponent(tex)}&ts=${serverPreviewKey}`
+  const serverImgSrc = settledTex
+    ? `/v1/?tex=${encodeURIComponent(settledTex)}`
     : '';
 
   const copyServerSvg = useCallback(() => {
