@@ -1,7 +1,7 @@
 {
   "name": "text-to-svg",
   "version": "0.0.0",
-  "description": "Convert LaTeX formulas to SVG/PNG images — replacement for tex.cheminfo.org",
+  "description": "Convert LaTeX formulas to SVG/PNG images, in the browser and through an HTTP API",
   "type": "module",
   "private": true,
   "workspaces": [

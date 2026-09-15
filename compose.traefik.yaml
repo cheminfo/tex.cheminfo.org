@@ -10,7 +10,13 @@ services:
     # What the server's deploy script probes before it keeps a new container.
     healthcheck:
       test:
-        ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:10422/v1/health']
+        [
+          'CMD',
+          'wget',
+          '--spider',
+          '-q',
+          'http://127.0.0.1:${PORT:-10422}/v1/health',
+        ]
       interval: 30s
       timeout: 5s
       retries: 3

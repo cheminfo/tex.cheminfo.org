@@ -1,5 +1,6 @@
 import { useSignals } from '@preact/signals-react/runtime';
 import { isHidden } from 'react-cheminfo/core';
+import { ExerciseLevelTag } from 'react-cheminfo/ui';
 
 import { PageLayout } from '../components/PageLayout.tsx';
 import { LatexEditor } from '../editor/LatexEditor.tsx';
@@ -52,7 +53,7 @@ export function TutorialPage() {
 
       <div className="section">
         <div className="section-head">
-          <span className={`level-tag level-${step.level}`}>{step.level}</span>
+          <ExerciseLevelTag level={step.level} />
           <span className="section-label step-title">
             {index + 1}. {step.title}
           </span>
