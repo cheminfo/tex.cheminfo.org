@@ -1,3 +1,4 @@
+import { BUILD_INFO } from 'react-cheminfo/build-info';
 import type { AboutContent } from 'react-cheminfo/core';
 import { PLATFORM_WORK } from 'react-cheminfo/core';
 
@@ -7,6 +8,9 @@ import { PLATFORM_WORK } from 'react-cheminfo/core';
  */
 export const ABOUT: AboutContent = {
   siteId: 'tex',
+  // Which release, built when, from which commit: the build says so,
+  // because a version written by hand is wrong by the next release.
+  build: BUILD_INFO,
   what: 'Render a LaTeX or mhchem formula as an SVG or PNG image, from an address any img tag can point at.',
   can: [
     'Write a formula and watch it render as you type.',

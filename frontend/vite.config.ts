@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import { cheminfoBuildInfo } from 'react-cheminfo/vite';
 import { defineConfig } from 'vite';
 
 import { siteFiles } from './vite.siteFiles.ts';
@@ -14,7 +15,7 @@ export default defineConfig({
   // being rebuilt: the `<base>` the container stamps in at startup is what
   // resolves them, and the page reads its mount back off that.
   base: './',
-  plugins: [react(), siteFiles()],
+  plugins: [react(), cheminfoBuildInfo(), siteFiles()],
   build: {
     target: 'esnext',
   },
