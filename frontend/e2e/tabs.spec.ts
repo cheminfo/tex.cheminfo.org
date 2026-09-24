@@ -20,7 +20,7 @@ test('clicking an example loads its formula into the editor', async ({
 
   // Editor should contain a formula and render the live preview
   await expect(page.locator('.cm-content')).not.toBeEmpty();
-  await expect(page.locator('.live-preview svg')).toBeVisible();
+  await expect(page.locator('.live-preview .mathjax-render svg')).toBeVisible();
 });
 
 test('Reference tab shows LaTeX documentation', async ({ page }) => {

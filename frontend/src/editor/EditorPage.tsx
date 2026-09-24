@@ -1,10 +1,12 @@
 import { useSignals } from '@preact/signals-react/runtime';
 import { isHidden } from 'react-cheminfo/core';
+import { ClickToCopy } from 'react-cheminfo/ui';
 
 import { ServerRenderPanel } from '../ServerRenderPanel.tsx';
 import { EmbedCode } from '../components/EmbedCode.tsx';
 import { PageLayout } from '../components/PageLayout.tsx';
 import { MathJaxRenderer } from '../shared/MathJaxRenderer.tsx';
+import { renderToSvg } from '../shared/mathjax.ts';
 import { setZoom, state, writeTex } from '../state/index.ts';
 import { MAX_ZOOM, MIN_ZOOM } from '../state/shareConfig.ts';
 
@@ -57,7 +59,14 @@ export function EditorPage() {
           </div>
         </div>
         <div className="section-body">
-          <div className="live-preview" style={{ fontSize: `${zoom}em` }}>
+          <ClickToCopy
+            as="div"
+            className="live-preview"
+            style={{ fontSize: `${zoom}em` }}
+            label="formula as SVG"
+            value={() => renderToSvg(tex, true)}
+            disabled={!tex}
+          >
             {tex ? (
               <MathJaxRenderer tex={tex} displayMode />
             ) : (
@@ -65,7 +74,7 @@ export function EditorPage() {
                 Live preview will appear here
               </span>
             )}
-          </div>
+          </ClickToCopy>
         </div>
       </div>
 

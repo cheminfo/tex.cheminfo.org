@@ -33,7 +33,7 @@ test('an embedded page renders no header', async ({ page }) => {
   await page.goto('/?embed=1&tex=x%5E2');
 
   await expect(page.locator('.app-header')).toHaveCount(0);
-  await expect(page.locator('.live-preview svg')).toBeVisible();
+  await expect(page.locator('.live-preview .mathjax-render svg')).toBeVisible();
 });
 
 test('hide removes the named tab and ignores unknown keys', async ({

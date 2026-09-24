@@ -8,11 +8,16 @@ interface MathJaxRendererProps {
   className?: string;
 }
 
+/** Every render carries it, so a rendered formula is told from any other icon. */
+const RENDER_CLASS = 'mathjax-render';
+
 export function MathJaxRenderer({
   tex,
   displayMode = false,
   className,
 }: MathJaxRendererProps) {
+  const classes =
+    className === undefined ? RENDER_CLASS : `${RENDER_CLASS} ${className}`;
   const { svg, error } = useMemo(() => {
     try {
       return { svg: renderToSvg(tex, displayMode), error: null };
@@ -26,7 +31,7 @@ export function MathJaxRenderer({
 
   if (error) {
     return (
-      <span className={className} style={{ color: '#c0392b', fontSize: 12 }}>
+      <span className={classes} style={{ color: '#c0392b', fontSize: 12 }}>
         {error}
       </span>
     );
@@ -34,7 +39,7 @@ export function MathJaxRenderer({
 
   return (
     <span
-      className={className}
+      className={classes}
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: svg }}
     />

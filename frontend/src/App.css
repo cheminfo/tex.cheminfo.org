@@ -288,6 +288,8 @@
 }
 
 /* ── Wells: what a formula renders to ────────────────────── */
+/* The right side is wider than the rest: a well is a block click-to-copy, and
+   the shorthand would take back the room chrome.css keeps for its glyph. */
 .live-preview,
 .server-preview {
   display: flex;
@@ -295,7 +297,7 @@
   min-height: 72px;
   align-items: center;
   justify-content: center;
-  padding: 14px;
+  padding: 14px 22px 14px 14px;
   border: 1px solid var(--border-strong);
   border-radius: var(--radius);
   background: var(--surface-sunken);
@@ -434,6 +436,13 @@
   border-color: var(--success);
   background: color-mix(in oklab, var(--success) 16%, white);
   color: var(--success);
+  cursor: default;
+}
+
+.icon-btn.failed {
+  border-color: var(--danger);
+  background: color-mix(in oklab, var(--danger) 16%, white);
+  color: var(--danger);
   cursor: default;
 }
 

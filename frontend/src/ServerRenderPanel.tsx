@@ -1,24 +1,55 @@
-import { useCallback, useState } from 'react';
-import { useDebouncedValue } from 'react-cheminfo/ui';
+import { writeBlobToClipboard } from 'react-cheminfo/core';
+import {
+  ClickToCopy,
+  useCopyToClipboard,
+  useDebouncedValue,
+} from 'react-cheminfo/ui';
+
+import { buildRenderImageTag, buildRenderUrl } from './shared/renderUrl.ts';
 
 interface Props {
   tex: string;
   zoom: number;
 }
 
-function flashCopied(setFlag: (value: boolean) => void): void {
-  setFlag(true);
-  setTimeout(() => setFlag(false), 1500);
-}
-
 // Long enough that a formula is rendered once a phrase is finished, rather
 // than once per keystroke.
 const SETTLE_MS = 800;
 
+interface RenderFormat {
+  key: string;
+  title: string;
+  label: string;
+  type: string;
+  /** Absent for the vector render. */
+  dpi?: 150 | 300;
+}
+
+const FORMATS: readonly RenderFormat[] = [
+  {
+    key: 'svg',
+    title: 'Copy SVG to clipboard',
+    label: 'Copy SVG',
+    type: 'image/svg+xml',
+  },
+  {
+    key: 'png150',
+    title: 'Copy PNG at 150 dpi',
+    label: 'Copy PNG 150dpi',
+    type: 'image/png',
+    dpi: 150,
+  },
+  {
+    key: 'png300',
+    title: 'Copy PNG at 300 dpi',
+    label: 'Copy PNG 300dpi',
+    type: 'image/png',
+    dpi: 300,
+  },
+];
+
 export function ServerRenderPanel({ tex, zoom }: Props) {
-  const [copiedSvg, setCopiedSvg] = useState(false);
-  const [copiedPng150, setCopiedPng150] = useState(false);
-  const [copiedPng300, setCopiedPng300] = useState(false);
+  const { copied, failed, key: outcomeKey, copy } = useCopyToClipboard();
 
   const settledTex = useDebouncedValue(tex, SETTLE_MS);
 
@@ -26,86 +57,73 @@ export function ServerRenderPanel({ tex, zoom }: Props) {
     ? `/v1/?tex=${encodeURIComponent(settledTex)}`
     : '';
 
-  const copyServerSvg = useCallback(() => {
+  function copyRender(format: RenderFormat): void {
     if (!tex) return;
-    void fetch(`/v1/?tex=${encodeURIComponent(tex)}`)
-      .then((response) => {
-        if (!response.ok) throw new Error(`render failed: ${response.status}`);
-        return response.blob();
-      })
-      .then((blob) =>
-        navigator.clipboard.write([
-          new ClipboardItem({ 'image/svg+xml': blob }),
-        ]),
-      )
-      .then(() => flashCopied(setCopiedSvg))
-      .catch(() => setCopiedSvg(false));
-  }, [tex]);
-
-  const copyServerPng = useCallback(
-    (dpi: 150 | 300, setFlag: (value: boolean) => void) => {
-      if (!tex) return;
-      void fetch(
-        `/v1/?tex=${encodeURIComponent(tex)}&format=png&resolution=${dpi}`,
-      )
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`render failed: ${response.status}`);
-          }
-          return response.blob();
-        })
-        .then((blob) =>
-          navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]),
-        )
-        .then(() => flashCopied(setFlag))
-        .catch(() => setFlag(false));
-    },
-    [tex],
-  );
+    // The blob goes in as a promise so the clipboard write stays inside the
+    // click: Safari refuses one that starts after an await.
+    void copy(
+      () =>
+        writeBlobToClipboard(fetchRender(tex, format.dpi), {
+          type: format.type,
+        }),
+      format.key,
+    );
+  }
 
   return (
     <div className="section section-server-preview">
       <div className="section-head">
         <span className="section-label">Server render</span>
         <div className="icon-btns">
-          <button
-            type="button"
-            className={`icon-btn ${copiedSvg ? 'copied' : ''}`}
-            title="Copy SVG to clipboard"
-            onClick={copyServerSvg}
-            disabled={!tex}
-          >
-            {copiedSvg ? '✓ Copied' : 'Copy SVG'}
-          </button>
-          <button
-            type="button"
-            className={`icon-btn ${copiedPng150 ? 'copied' : ''}`}
-            title="Copy PNG at 150 dpi"
-            onClick={() => copyServerPng(150, setCopiedPng150)}
-            disabled={!tex}
-          >
-            {copiedPng150 ? '✓ Copied' : 'Copy PNG 150dpi'}
-          </button>
-          <button
-            type="button"
-            className={`icon-btn ${copiedPng300 ? 'copied' : ''}`}
-            title="Copy PNG at 300 dpi"
-            onClick={() => copyServerPng(300, setCopiedPng300)}
-            disabled={!tex}
-          >
-            {copiedPng300 ? '✓ Copied' : 'Copy PNG 300dpi'}
-          </button>
+          {FORMATS.map((format) => {
+            const isCopied = copied && outcomeKey === format.key;
+            const isFailed = failed && outcomeKey === format.key;
+            return (
+              <button
+                key={format.key}
+                type="button"
+                className={`icon-btn ${isCopied ? 'copied' : ''} ${
+                  isFailed ? 'failed' : ''
+                }`}
+                title={format.title}
+                onClick={() => copyRender(format)}
+                disabled={!tex}
+              >
+                {isCopied
+                  ? '✓ Copied'
+                  : isFailed
+                    ? 'Copy failed'
+                    : format.label}
+              </button>
+            );
+          })}
         </div>
       </div>
       <div className="section-body">
-        <div className="server-preview">
+        <ClickToCopy
+          as="div"
+          className="server-preview"
+          label="image link"
+          value={() => ({
+            text: buildRenderUrl(settledTex),
+            html: buildRenderImageTag(settledTex),
+          })}
+          disabled={!serverImgSrc}
+        >
           {serverImgSrc ? (
             <img src={serverImgSrc} alt="Server render" style={{ zoom }} />
           ) : (
             <span className="placeholder">Server preview will appear here</span>
           )}
-        </div>
+        </ClickToCopy>
       </div>
     </div>
   );
+}
+
+async function fetchRender(tex: string, dpi?: 150 | 300): Promise<Blob> {
+  const query = dpi === undefined ? '' : `&format=png&resolution=${dpi}`;
+  const response = await fetch(`/v1/?tex=${encodeURIComponent(tex)}${query}`);
+  if (!response.ok) throw new Error(`render failed: ${response.status}`);
+  return response.blob();
 }

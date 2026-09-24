@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { Fragment } from 'react';
+import { ClickToCopy } from 'react-cheminfo/ui';
 
 import { MathJaxRenderer } from '../shared/MathJaxRenderer.tsx';
 
@@ -62,7 +63,9 @@ function GlossaryTerm({ term, entry }: { term: string; entry: GlossaryEntry }) {
         <span className="glossary-summary">{entry.summary}</span>
         {entry.examples.map((example) => (
           <span key={example.tex} className="glossary-example">
-            <code>{example.tex}</code>
+            <ClickToCopy as="code" label="LaTeX" value={example.tex}>
+              {example.tex}
+            </ClickToCopy>
             <MathJaxRenderer tex={example.tex} displayMode={false} />
             {example.note && <i>{example.note}</i>}
           </span>

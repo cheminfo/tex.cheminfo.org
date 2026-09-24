@@ -1,13 +1,13 @@
 import { CopyButton } from 'react-cheminfo/ui';
 
-import { buildRenderUrl } from '../shared/renderUrl.ts';
+import { buildRenderImageTag, buildRenderUrl } from '../shared/renderUrl.ts';
 
 const FORMATS = [
   {
     key: 'html',
     label: 'HTML',
     title: 'Copy HTML to clipboard',
-    build: (tex: string) => `<img src="${buildRenderUrl(tex)}"/>`,
+    build: (tex: string) => buildRenderImageTag(tex),
   },
   {
     key: 'md',

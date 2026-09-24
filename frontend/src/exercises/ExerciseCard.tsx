@@ -2,6 +2,7 @@ import { Button } from '@blueprintjs/core';
 import { useSignals } from '@preact/signals-react/runtime';
 import { useState } from 'react';
 import {
+  ClickToCopy,
   ExerciseActions,
   ExerciseLevelTag,
   HintLadder,
@@ -155,7 +156,11 @@ export function ExerciseCard({ onNext }: ExerciseCardProps) {
           {progress.showSolution && (
             <div className="solution-block">
               <span className="well-label">One way to write it</span>
-              <code className="solution-code">{exercise.solution}</code>
+              {/* The code itself scrolls sideways, which would clip an inline
+                  glyph, so the copy target is the block around it. */}
+              <ClickToCopy as="div" label="LaTeX" value={exercise.solution}>
+                <code className="solution-code">{exercise.solution}</code>
+              </ClickToCopy>
             </div>
           )}
         </div>

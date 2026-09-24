@@ -17,7 +17,7 @@ test('typing a formula renders the live preview', async ({ page }) => {
   await page.locator('.cm-content').fill(SIMPLE_FORMULA);
 
   // MathJax renders SVG into the live preview
-  await expect(page.locator('.live-preview svg')).toBeVisible();
+  await expect(page.locator('.live-preview .mathjax-render svg')).toBeVisible();
 });
 
 test('embed code shows HTML img tag', async ({ page }) => {
@@ -59,7 +59,7 @@ test('?tex= URL param pre-fills the editor on load', async ({ page }) => {
   await page.goto(`/?tex=${encodeURIComponent(SIMPLE_FORMULA)}`);
 
   await expect(page.locator('.cm-content')).toHaveText(SIMPLE_FORMULA);
-  await expect(page.locator('.live-preview svg')).toBeVisible();
+  await expect(page.locator('.live-preview .mathjax-render svg')).toBeVisible();
 });
 
 test('server render shows an image after debounce', async ({ page }) => {

@@ -99,7 +99,9 @@ for (const embed of ['embed', 'embed=1']) {
 
     await page.locator('.cm-content').fill(FORMULA);
 
-    await expect(page.locator('.live-preview svg')).toBeVisible();
+    await expect(
+      page.locator('.live-preview .mathjax-render svg'),
+    ).toBeVisible();
     await expect(page.locator('.server-preview img')).toHaveAttribute(
       'src',
       `/v1/?tex=${ENCODED_FORMULA}`,

@@ -60,7 +60,10 @@
   gap: 8px;
 }
 
+/* The copy glyph floats just past the right edge of the source, so the
+   rendered example beside it keeps its distance. */
 .glossary-example code {
+  margin-right: 14px;
   color: var(--text-muted);
   font-family: 'Fira Mono', 'Cascadia Code', Consolas, monospace;
   font-size: 12px;
