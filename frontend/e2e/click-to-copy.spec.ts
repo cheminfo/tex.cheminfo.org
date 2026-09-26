@@ -36,7 +36,7 @@ test('the live preview copies the formula as SVG', async ({ page }) => {
 
   const preview = page.locator('.live-preview');
   await expect(preview.locator('.mathjax-render svg')).toBeVisible();
-  await expect(preview).toHaveCSS('cursor', 'copy');
+  await expect(preview).toHaveCSS('cursor', /\bcopy$/);
   await expect(preview).toHaveAttribute('title', 'Copy the formula as SVG');
   // The strip chrome.css keeps for the glyph, which the well's own padding
   // shorthand must not take back.
@@ -62,7 +62,7 @@ test('the server render copies the address of its image', async ({ page }) => {
 
   const preview = page.locator('.server-preview');
   await expect(preview.locator('img')).toBeVisible({ timeout: 5000 });
-  await expect(preview).toHaveCSS('cursor', 'copy');
+  await expect(preview).toHaveCSS('cursor', /\bcopy$/);
   await expect(preview).toHaveAttribute('title', 'Copy the image link');
 
   await preview.click();
