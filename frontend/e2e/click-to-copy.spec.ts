@@ -90,27 +90,24 @@ test('a revealed solution copies its LaTeX', async ({ page }) => {
   expect(await readClipboard(page)).toBe(String.raw`\frac{1}{2}`);
 });
 
-test('a glossary example copies its LaTeX without closing the card', async ({
+test('a glossary example copies its LaTeX without closing the definition', async ({
   page,
 }) => {
   await page.goto('/tutorial/1');
 
-  // The card opens on focus as well as on hover, and the keyboard reaches the
-  // example wherever the card has room to open.
-  await page.locator('.glossary-term').first().focus();
+  await page.locator('.glossary-term').first().hover();
 
-  const card = page.locator('.glossary-card').first();
-  await expect(card).toHaveCSS('display', 'flex');
+  const definition = page.locator('.bp6-tooltip');
+  await expect(definition).toBeVisible();
 
-  const example = card.locator('.glossary-example .click-to-copy').first();
-  // Attached, not visible: the open card is clipped by the section around it,
-  // so the keyboard is the path this asserts.
-  await expect(example).toBeAttached();
+  const example = definition
+    .locator('.glossary-example .click-to-copy')
+    .first();
   await expect(example).toHaveAttribute('title', 'Copy the LaTeX (v = d/t)');
 
-  await example.press('Enter');
+  await example.click();
   await expect(example).toHaveAttribute('data-copy', 'copied');
 
   expect(await readClipboard(page)).toBe('v = d/t');
-  await expect(card).toHaveCSS('display', 'flex');
+  await expect(definition).toBeVisible();
 });

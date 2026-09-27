@@ -1,18 +1,14 @@
+import type { Glossary } from 'react-cheminfo/core';
+
+/** One worked example of a term: a formula, and what it shows. */
 export interface GlossaryExample {
   tex: string;
   /** What this example demonstrates. @default undefined */
   note?: string;
 }
 
-export interface GlossaryEntry {
-  title: string;
-  /** One short paragraph. */
-  summary: string;
-  examples: GlossaryExample[];
-}
-
 /** Keyed by the lowercased text inside a `[[marker]]`. */
-export const GLOSSARY: Record<string, GlossaryEntry> = {
+export const GLOSSARY: Glossary<GlossaryExample> = {
   variable: {
     title: 'Variable',
     summary:

@@ -1,6 +1,6 @@
 import { useSignals } from '@preact/signals-react/runtime';
 import { isHidden } from 'react-cheminfo/core';
-import { ExerciseLevelTag } from 'react-cheminfo/ui';
+import { ExerciseLevelTag, GlossaryText } from 'react-cheminfo/ui';
 
 import { PageLayout } from '../components/PageLayout.tsx';
 import { LatexEditor } from '../editor/LatexEditor.tsx';
@@ -8,7 +8,6 @@ import { MathJaxRenderer } from '../shared/MathJaxRenderer.tsx';
 import { state, writeDraft } from '../state/index.ts';
 import type { FeatureKey } from '../state/shareConfig.ts';
 
-import { GlossaryText } from './GlossaryText.tsx';
 import { StepNavigator } from './StepNavigator.tsx';
 import './Tutorial.css';
 import { TUTORIAL_STEPS } from './tutorialSteps.ts';
@@ -60,7 +59,7 @@ export function TutorialPage() {
         </div>
         <div className="section-body">
           <p className="step-description">
-            <GlossaryText text={step.description} />
+            <GlossaryText text={step.description} className="glossary-term" />
           </p>
 
           <LatexEditor

@@ -2,7 +2,6 @@ import { signal } from '@preact/signals-react';
 import { parseShareConfig } from 'react-cheminfo/core';
 
 import { resolveRoute } from './address.ts';
-import { preferences } from './preferences.ts';
 import type { Route } from './router.ts';
 import { parseRoute, routePath } from './router.ts';
 import type { ShareConfig } from './shareConfig.ts';
@@ -91,11 +90,6 @@ export function startRouting(): void {
   const resolved = resolveRoute(view.route.peek());
   view.route.value = resolved;
   writeAddress(routePath(resolved), { replace: true });
-
-  // A link carrying a zoom overrides the stored preference: what the author of
-  // the link is looking at is what the reader must see.
-  const zoom = searchParameter('zoom');
-  if (zoom) preferences.zoom.value = view.config.peek().params.zoom;
 
   globalThis.addEventListener?.('popstate', () => {
     view.route.value = resolveRoute(parseRoute(pathname()));

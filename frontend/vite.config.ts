@@ -24,8 +24,12 @@ export default defineConfig({
     // Fail loudly instead of drifting to the next free port, which would leave
     // the proxy target, the dev script and the README disagreeing.
     strictPort: true,
+    // Everything the backend answers, so a dev run reaches the same addresses
+    // the deployed site does: the renderer, and the Swagger UI the API entry of
+    // the header points at — `/docs` covers its assets under `/docs/static`.
     proxy: {
       '/v1': `http://localhost:${backendPort}`,
+      '/docs': `http://localhost:${backendPort}`,
     },
   },
 });

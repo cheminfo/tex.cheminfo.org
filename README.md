@@ -1,6 +1,6 @@
 # tex.cheminfo.org
 
-**tex.cheminfo.org** renders LaTeX math formulas into SVG or PNG images on demand, served over a simple HTTP API. It is the self-hosted replacement for the public `tex.cheminfo.org` service (previously `cheminfo/tex-to-svg-docker`), using MathJax 3 for both server-side rendering and the React frontend for interactive authoring and sharing.
+**tex.cheminfo.org** renders LaTeX and mhchem formulas as SVG or PNG images, in the browser and over a stateless HTTP API. MathJax 3 draws both the live preview and the image the server hands out, so the two agree.
 
 ## Features
 
@@ -11,7 +11,7 @@
 - Exercise series that teach the notation: reproduce a rendered formula, marked
   on what it renders to rather than on how it is written
 - Shareable and embeddable: every link reproduces exactly what the author sees
-- Drop-in URL compatibility with `tex.cheminfo.org/?tex=...` bookmarks and links
+- Every `?tex=` link or bookmark pointing at the site opens the formula it names
 
 ## Local development
 
@@ -44,9 +44,9 @@ Liveness probe, returns `{ "status": "ok" }`.
 
 ### `GET /?tex=<formula>`
 
-Serves the React frontend with the formula preloaded. Compatible with existing
-`tex.cheminfo.org/?tex=...` links; a non-browser client (an `<img>` tag) is
-redirected to `/v1/` instead.
+Serves the React frontend with the formula preloaded. A non-browser client (an
+`<img>` tag) is redirected to `/v1/` instead, so the site root renders an image
+as well as a page.
 
 ## Embed code
 
@@ -64,11 +64,14 @@ snippet.
 
 ### Addresses
 
-| Address           | Page                                                 |
-| ----------------- | ---------------------------------------------------- |
-| `/`               | The editor, optionally carrying a formula in `?tex=` |
-| `/exercises`      | The exercise series, opening on the first exercise   |
-| `/exercises/<id>` | One exercise — e.g. `/exercises/nernst`              |
+| Address           | Page                                                       |
+| ----------------- | ---------------------------------------------------------- |
+| `/`               | The editor, optionally carrying a formula in `?tex=`       |
+| `/tutorial`       | The guided tour, opening on its first step                 |
+| `/tutorial/<n>`   | One step, counted from 1 — e.g. `/tutorial/7`              |
+| `/exercises`      | The exercise series, opening on the first exercise         |
+| `/exercises/<id>` | One exercise — e.g. `/exercises/nernst`                    |
+| `/about`          | What the tool is built on, its licence, and how to cite it |
 
 ### Parameters
 

@@ -8,12 +8,11 @@ import swaggerUi from '@fastify/swagger-ui';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import Fastify from 'fastify';
-import { robotsTxt } from 'react-cheminfo/core';
+import { injectTrackingScript, robotsTxt } from 'react-cheminfo/core';
 
 import healthRoutes from './routes/health.ts';
 import renderRoutes from './routes/render.ts';
 import type { FastifyTyped } from './types.ts';
-import { injectTrackingScript } from './utils/injectTrackingScript.ts';
 import { injectCrawlPath, injectPageMeta } from './utils/pageMeta.ts';
 import { readRoutes } from './utils/routes.ts';
 import { basePathOf, joinBase, mountedOrigin } from './utils/sitePath.ts';

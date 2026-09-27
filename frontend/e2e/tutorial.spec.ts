@@ -47,9 +47,18 @@ test('a glossary term carries its definition', async ({ page }) => {
   await page.goto('/tutorial/1');
 
   const term = page.locator('.glossary-term').first();
-  await expect(term).toBeVisible();
+  await expect(term).toHaveText('variable');
   await term.hover();
-  await expect(page.locator('.glossary-card').first()).toBeVisible();
+
+  // The definition is the family's, on a Blueprint tooltip plate: it is headed
+  // by the term, and every worked example is the formula as it is typed next to
+  // what it renders to.
+  const definition = page.locator('.bp6-tooltip');
+  await expect(definition).toContainText('Variable');
+  await expect(definition).toContainText('three variables, all italic');
+  await expect(
+    definition.locator('.glossary-example .mathjax-render svg').first(),
+  ).toBeVisible();
 });
 
 test('an embedded step carries no header and no step list', async ({

@@ -12,6 +12,25 @@ test('the header carries the mark and the two-colour wordmark', async ({
   await expect(brand.locator('.wordmark__alt')).toHaveText('cheminfo');
 });
 
+test('the utilities are About, Cite, Tools and Share, and nothing else', async ({
+  page,
+}) => {
+  await page.goto('/');
+
+  // The four the whole family carries, in this order and on their own: a page
+  // of this deployment — the API documentation — belongs among the pages.
+  const utilities = page.locator('.app-header-actions > *');
+  await expect(utilities).toHaveCount(4);
+  await expect(utilities.nth(0)).toHaveAttribute('aria-label', 'About');
+  await expect(utilities.nth(1)).toHaveClass('citation-button');
+  await expect(utilities.nth(2)).toHaveClass('ecosystem-button');
+  await expect(utilities.nth(3)).toHaveAttribute('aria-label', 'Share');
+
+  const pages = page.locator('.app-header-nav > *');
+  await expect(pages).toHaveText(['Editor', 'Tutorial', 'Exercises', 'API']);
+  await expect(pages.nth(3)).toHaveAttribute('href', '/docs');
+});
+
 test('About is the first utility, and it opens the page', async ({ page }) => {
   await page.goto('/');
 
@@ -27,6 +46,7 @@ test('About is the first utility, and it opens the page', async ({ page }) => {
   await expect(page.locator('.about-can li')).toHaveCount(6);
   await expect(page.locator('.about-credits .credits-list li')).toHaveCount(5);
   await expect(page.getByRole('link', { name: 'MathJax' })).toBeVisible();
+  await expect(page.locator('.about-provided-by')).toContainText('Luc Patiny');
 });
 
 test('an embedded page renders no header', async ({ page }) => {
@@ -58,6 +78,22 @@ test('zoom is read from the link and clamped', async ({ page }) => {
   await page.goto('/?tex=x%5E2&zoom=99');
 
   await expect(page.getByRole('button', { name: '3×' })).toHaveClass(/active/);
+});
+
+test('changing the zoom writes it into the address, and its default out', async ({
+  page,
+}) => {
+  await page.goto('/?tex=x%5E2');
+  // A preference sitting at its default is never written.
+  await expect(page).not.toHaveURL(/zoom=/);
+
+  await page.getByRole('button', { name: '3×' }).click();
+  await expect(page).toHaveURL(/[?&]zoom=3(?:&|$)/);
+  // The formula the page was opened on keeps its place in the address.
+  await expect(page).toHaveURL(/tex=x%5E2/);
+
+  await page.getByRole('button', { name: '2×' }).click();
+  await expect(page).not.toHaveURL(/zoom=/);
 });
 
 test('the share dialog opens on an embed link carrying the formula', async ({

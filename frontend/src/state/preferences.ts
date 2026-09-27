@@ -1,21 +1,33 @@
-import { signal } from '@preact/signals-react';
+import { effect, signal } from '@preact/signals-react';
 import type { ExerciseProgress, ProgressRecords } from 'react-cheminfo/core';
+import {
+  persistSignalBucket,
+  syncPreferencesWithUrl,
+} from 'react-cheminfo/core';
 
 import { EMPTY_PROGRESS, mergeProgress } from '../exercises/progress.ts';
 
-import { persistSignals } from './persist.ts';
-import { DEFAULT_ZOOM, MAX_ZOOM, MIN_ZOOM } from './shareConfig.ts';
+import {
+  DEFAULT_ZOOM,
+  MAX_ZOOM,
+  MIN_ZOOM,
+  SHARE_VOCABULARY,
+} from './shareConfig.ts';
 
 /**
  * What a student chose and what a student did: the only bucket that survives a
  * reload. Persisted as one entry, so the stored shape mirrors this tree.
  */
-export const preferences = persistSignals('tex.cheminfo.org:preferences', {
-  /** Preview magnification, shared by the editor and the previews. */
-  zoom: signal(DEFAULT_ZOOM),
-  exercises: {
-    /** What has been written, attempted and solved, keyed by exercise. */
-    progress: signal<ProgressRecords>({}),
+export const preferences = persistSignalBucket({
+  key: 'tex.cheminfo.org:preferences',
+  effect,
+  bucket: {
+    /** Preview magnification, shared by the editor and the previews. */
+    zoom: signal(DEFAULT_ZOOM),
+    exercises: {
+      /** What has been written, attempted and solved, keyed by exercise. */
+      progress: signal<ProgressRecords>({}),
+    },
   },
 });
 
@@ -25,6 +37,31 @@ export const preferences = persistSignals('tex.cheminfo.org:preferences', {
  */
 export function setZoom(zoom: number): void {
   preferences.zoom.value = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom));
+}
+
+/**
+ * Mirror the preferences in the address, so the bar always holds the link to
+ * hand out and the share dialog carries them without being told. A link naming
+ * one applies it and it becomes the visitor's own; a value sitting at its
+ * default is deleted rather than written, and a key the link omits leaves what
+ * is stored alone.
+ * @returns A function that stops rewriting the address.
+ */
+export function startPreferenceSync(): () => void {
+  return syncPreferencesWithUrl({
+    preferences: {
+      zoom: {
+        codec: SHARE_VOCABULARY.params.zoom,
+        get: () => preferences.zoom.value,
+        set: setZoom,
+      },
+    },
+    subscribe: (listener) =>
+      effect(() => {
+        void preferences.zoom.value;
+        listener();
+      }),
+  });
 }
 
 /**

@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "check-deploy": "node node_modules/react-cheminfo/bin/check-deploy.mjs",
-    "check-tokens": "node node_modules/react-cheminfo/bin/check-tokens.mjs frontend/src backend/src",
+    "check-tokens": "node node_modules/react-cheminfo/bin/check-tokens.mjs --fallbacks frontend/src backend/src",
     "check-types": "npm run check-types -w backend && npm run check-types -w frontend",
     "dev": "lsof -ti:10422,10423 | xargs kill -9 2>/dev/null; concurrently --kill-others --kill-others-on-fail \"npm run dev -w backend\" \"npm run dev -w frontend\"",
     "eslint": "eslint .",

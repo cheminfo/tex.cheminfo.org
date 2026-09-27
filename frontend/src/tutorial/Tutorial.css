@@ -6,57 +6,13 @@
 }
 
 /* ── Glossary terms ──────────────────────────────────────── */
-.glossary-term {
-  position: relative;
-  border-bottom: 2px dotted var(--brand-alt-text);
-  color: var(--brand-alt-text);
-  cursor: help;
-  font-weight: 600;
-}
-
-.glossary-card {
-  position: absolute;
-  z-index: 40;
-  bottom: calc(100% + 8px);
-  left: 0;
-  display: none;
-  width: 320px;
-  flex-direction: column;
-  padding: 12px 14px;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: var(--shadow-lg);
-  color: var(--text);
-  cursor: auto;
-  font-size: 13px;
-  font-weight: 400;
-  gap: 8px;
-  line-height: 1.5;
-}
-
-.glossary-term:hover .glossary-card,
-.glossary-term:focus .glossary-card,
-.glossary-term:focus-within .glossary-card {
-  display: flex;
-}
-
-.glossary-title {
-  color: var(--brand);
-  font-size: 13.5px;
-  font-weight: 700;
-}
-
-.glossary-summary {
-  color: var(--text);
-}
-
+/* The chip and the plate its definition is drawn on are the family's, from
+   `GlossaryText`; what is left here is how a worked example is laid out inside
+   one — the formula as it is typed, next to what it renders to. */
 .glossary-example {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  padding-top: 8px;
-  border-top: 1px solid var(--border);
   gap: 8px;
 }
 
@@ -64,25 +20,7 @@
    rendered example beside it keeps its distance. */
 .glossary-example code {
   margin-right: 14px;
-  color: var(--text-muted);
+  color: inherit;
   font-family: 'Fira Mono', 'Cascadia Code', Consolas, monospace;
   font-size: 12px;
-}
-
-.glossary-example i {
-  width: 100%;
-  color: var(--text-muted);
-  font-size: 12px;
-}
-
-/* A phone has no room beside the word for a card this wide, so it rises from
-   the bottom edge of the screen instead. */
-@media (width <= 40rem) {
-  .glossary-card {
-    position: fixed;
-    right: 8px;
-    bottom: 8px;
-    left: 8px;
-    width: auto;
-  }
 }

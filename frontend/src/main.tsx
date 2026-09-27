@@ -9,7 +9,12 @@ import { createRoot } from 'react-dom/client';
 
 import './index.css';
 import App from './App.tsx';
-import { sanitizeStoredProgress, startRouting, state } from './state/index.ts';
+import {
+  sanitizeStoredProgress,
+  startPreferenceSync,
+  startRouting,
+  state,
+} from './state/index.ts';
 import { routePath } from './state/router.ts';
 import { PAGE_ROUTES } from './state/routes.ts';
 import { absoluteUrl } from './state/site.ts';
@@ -28,6 +33,9 @@ startDocumentMeta({
   follow: effect,
 });
 sanitizeStoredProgress();
+// The address is the link to hand out, so a preference the visitor changed is
+// written into it — once the route has taken the path it answers.
+startPreferenceSync();
 
 const rootElement = document.querySelector('#root');
 if (!rootElement) throw new Error('Root element not found');

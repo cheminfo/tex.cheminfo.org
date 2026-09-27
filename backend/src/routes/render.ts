@@ -53,8 +53,8 @@ function injectBackground(svg: string, color: string): string {
 
 /**
  * Register routes for LaTeX rendering.
- * - GET /    — legacy compat: redirects to /v1/ when tex param is present
- *              and the client is not a browser (e.g. an <img> tag).
+ * - GET /    — the site root: redirects to /v1/ when a tex param is present and
+ *              the client is not a browser (e.g. an <img> tag).
  * - GET /v1/ — canonical renderer (SVG or PNG)
  * @param fastify - The Fastify instance to register routes on.
  */
@@ -64,7 +64,7 @@ export default async function renderRoutes(fastify: FastifyTyped) {
     {
       schema: {
         tags: ['render'],
-        summary: 'Legacy tex.cheminfo.org entry point',
+        summary: 'Render a formula asked for at the site root',
         description:
           'Redirects `?tex=` requests from non-browser clients to /v1/; browsers get the frontend.',
         querystring: querySchema,

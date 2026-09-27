@@ -1,5 +1,10 @@
 import { useSignals } from '@preact/signals-react/runtime';
-import { AboutPage, ShareDialog, SiteTheme } from 'react-cheminfo/ui';
+import {
+  AboutPage,
+  GlossaryProvider,
+  ShareDialog,
+  SiteTheme,
+} from 'react-cheminfo/ui';
 
 import './App.css';
 import './learn.css';
@@ -9,7 +14,9 @@ import { EditorPage } from './editor/EditorPage.tsx';
 import { ExercisesPage } from './exercises/ExercisesPage.tsx';
 import { closeShare, state } from './state/index.ts';
 import { SHARE_VOCABULARY } from './state/shareConfig.ts';
+import { GlossaryExample } from './tutorial/GlossaryExample.tsx';
 import { TutorialPage } from './tutorial/TutorialPage.tsx';
+import { GLOSSARY } from './tutorial/glossary.ts';
 
 /** How the page is named in the share dialog, and in the frame it writes. */
 const SHARE_TITLE = 'tex.cheminfo.org — LaTeX to SVG';
@@ -19,7 +26,11 @@ export default function App() {
   const { page } = state.view.route.value;
 
   return (
-    <>
+    <GlossaryProvider
+      glossary={GLOSSARY}
+      renderExample={(example) => <GlossaryExample example={example} />}
+      renderCode={(code) => <code className="inline-code">{code}</code>}
+    >
       <SiteTheme siteId="tex" />
       <AppShell>
         {page === 'about' && (
@@ -38,6 +49,6 @@ export default function App() {
           title={SHARE_TITLE}
         />
       </AppShell>
-    </>
+    </GlossaryProvider>
   );
 }

@@ -23,5 +23,6 @@ export {
   progressOf,
   sanitizeStoredProgress,
   setZoom,
+  startPreferenceSync,
   updateProgress,
 } from './preferences.ts';

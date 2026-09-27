@@ -35,6 +35,16 @@ const NAV = [
     title: 'Learn the notation by writing it',
     onSelect: () => navigate({ page: 'exercises' }),
   },
+  // A page of this deployment rather than a utility: the four utilities of the
+  // family are About, Cite, Tools and Share, and nothing is wedged between
+  // them.
+  {
+    id: 'api',
+    label: 'API',
+    href: withBase('/docs'),
+    external: true,
+    title: 'OpenAPI documentation for the rendering API',
+  },
 ] as const;
 
 /**
@@ -74,16 +84,6 @@ export function AppShell({ children }: { children: ReactNode }) {
                 active={page === 'about'}
               />
               {ABOUT.cite ? <CiteButton works={ABOUT.cite} /> : null}
-              <NavLink
-                item={{
-                  id: 'api',
-                  label: 'API',
-                  icon: 'code',
-                  href: withBase('/docs'),
-                  external: true,
-                  title: 'OpenAPI documentation for the rendering API',
-                }}
-              />
               <EcosystemButton currentSiteId="tex" />
               <ShareButton onClick={openShare} />
             </>

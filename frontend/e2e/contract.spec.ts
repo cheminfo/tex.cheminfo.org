@@ -68,6 +68,25 @@ test('typing a formula gives its embed snippets and its server image', async ({
   expect(body).toMatch(/^<svg/);
 });
 
+test('the API entry of the bar opens the Swagger UI', async ({ page }) => {
+  // Asserted through the dev server rather than against the backend port: the
+  // documentation is the backend's, so it only answers here when the dev proxy
+  // forwards it, and a missing proxy otherwise hands the page the tool itself.
+  const response = await page.request.get('/docs');
+  expect(response.status()).toBe(200);
+  expect(await response.text()).toContain('swagger-ui');
+
+  const json = await page.request.get('/docs/json');
+  expect(json.status()).toBe(200);
+  const openapi = await json.json();
+  expect(openapi.info.title).toBe('tex.cheminfo.org');
+
+  await page.goto('/');
+  await expect(
+    page.locator('.app-header-nav').getByText('API', { exact: true }),
+  ).toHaveAttribute('href', '/docs');
+});
+
 test('/about renders the About page with its Cite control and the footer', async ({
   page,
 }) => {

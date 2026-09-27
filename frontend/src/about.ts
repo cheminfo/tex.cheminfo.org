@@ -24,6 +24,8 @@ export const ABOUT: AboutContent = {
     'MathJax 3 renders both the preview in your browser and the image the server hands out, so the two agree. The API is a stateless GET: /v1/?tex=E%3Dmc%5E2 returns the image, and nothing is stored.',
     'Every ?tex= link or bookmark pointing at tex.cheminfo.org opens here.',
   ],
+  people: [{ name: 'Luc Patiny' }],
+  providedBy: ['epfl'],
   credits: ['mathjax', 'blueprint', 'react-cheminfo', 'react', 'vite'],
   cite: [PLATFORM_WORK],
 };
