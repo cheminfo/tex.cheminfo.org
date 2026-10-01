@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import compress from '@fastify/compress';
 import cors from '@fastify/cors';
 import fastifyStatic from '@fastify/static';
 import swagger from '@fastify/swagger';
@@ -68,11 +67,6 @@ export async function buildApp(options: BuildAppOptions = {}) {
     logger,
     trustProxy,
   }).withTypeProvider<TypeBoxTypeProvider>();
-  // Brotli or gzip on every response a client will take it on, JSON answers
-  // and any static file included. Registered before anything that replies, so
-  // there is no route the rule misses.
-
-  await fastify.register(compress, { global: true, encodings: ['br', 'gzip'] });
 
   await fastify.register(swagger, {
     openapi: {
