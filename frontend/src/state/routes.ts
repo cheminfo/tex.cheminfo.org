@@ -84,7 +84,7 @@ export const PAGE_ROUTES: readonly RouteMeta[] = [
     path: '/about',
     title: ABOUT_TITLE,
     description:
-      'What tex.cheminfo.org renders your formulas with, the borrowed work it stands on, its licence, and where to report a problem.',
+      'What tex.cheminfo.org renders your formulas with, the borrowed work it stands on, and the papers to cite when it helped.',
   },
 ];
 

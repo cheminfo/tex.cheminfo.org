@@ -27,9 +27,8 @@ export const TUTORIAL_TITLE =
 export const EXERCISES_TITLE =
   'LaTeX exercises — practise the notation by writing it';
 
-/** The page saying what the tool is, what it borrows and under what licence. */
-export const ABOUT_TITLE =
-  'About — what renders the formulas, and under what licence';
+/** The page saying what the tool is, what it borrows and how to cite it. */
+export const ABOUT_TITLE = 'About — what renders the formulas';
 
 /**
  * What one stop of the guided tour is called.
