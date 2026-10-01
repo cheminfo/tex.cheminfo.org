@@ -17,6 +17,16 @@ async function buildFrontendApp(trackingScript?: string, siteUrl?: string) {
   });
 }
 
+/** The words a crawler reads in the page, with the markup taken out. */
+function bodyText(html: string): string {
+  return (
+    /<noscript>(?<text>[\s\S]*?)<\/noscript>/.exec(html)?.groups?.text ?? ''
+  )
+    .replaceAll(/<[^>]+>/g, ' ')
+    .replaceAll(/\s+/g, ' ')
+    .trim();
+}
+
 test('every routed address carries the tracking snippet', async () => {
   const app = await buildFrontendApp(SNIPPET);
 
@@ -71,6 +81,28 @@ test('a routed address is titled and canonicalised for its own page', async () =
   expect(editor.body).toContain('<title>LaTeX to SVG and PNG');
   expect(canonicalOf(editor.body).pathname).toBe('/');
   expect(canonicalOf(editor.body).search).toBe('');
+
+  await app.close();
+});
+
+test("each routed address carries its own text, not the home page's", async () => {
+  const app = await buildFrontendApp();
+  const home = await app.inject({
+    method: 'GET',
+    url: '/',
+    headers: { host: 'tex.cheminfo.org', accept: 'text/html' },
+  });
+  const tutorial = await app.inject({
+    method: 'GET',
+    url: '/tutorial/3',
+    headers: { host: 'tex.cheminfo.org' },
+  });
+
+  // Both carry the menu; what must differ is the text above it, or a search
+  // engine is handed one page under every address of the site.
+  expect(bodyText(home.body)).not.toBe(bodyText(tutorial.body));
+  expect(bodyText(home.body).length).toBeGreaterThan(0);
+  expect(bodyText(tutorial.body)).toContain('tutorial');
 
   await app.close();
 });

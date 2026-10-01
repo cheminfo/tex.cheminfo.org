@@ -8,14 +8,24 @@ import swaggerUi from '@fastify/swagger-ui';
 import type { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import Fastify from 'fastify';
+import type { RouteMeta } from 'react-cheminfo/core';
 import { injectTrackingScript, robotsTxt } from 'react-cheminfo/core';
 
 import healthRoutes from './routes/health.ts';
 import renderRoutes from './routes/render.ts';
 import type { FastifyTyped } from './types.ts';
-import { injectCrawlPath, injectPageMeta } from './utils/pageMeta.ts';
+import {
+  injectCrawlPath,
+  injectPageMeta,
+  pageMetaFor,
+} from './utils/pageMeta.ts';
 import { readRoutes } from './utils/routes.ts';
-import { basePathOf, joinBase, mountedOrigin } from './utils/sitePath.ts';
+import {
+  basePathOf,
+  joinBase,
+  mountedOrigin,
+  stripBase,
+} from './utils/sitePath.ts';
 import { buildSitemap } from './utils/sitemap.ts';
 
 export interface BuildAppOptions {
@@ -95,16 +105,30 @@ function registerFrontend(
   root: string,
   options: { trackingScript?: string; siteUrl?: string },
 ): void {
-  // The built page is a template: the crawl path is the same on every address,
-  // so it is written once here, and the head is written per request below.
-  const index = injectCrawlPath(
-    injectTrackingScript(
-      readFileSync(join(root, 'index.html'), 'utf8'),
-      options.trackingScript,
-    ),
+  // The built page is a template: the head and the crawl path are both written
+  // per address below. The crawl path used to be written once here, which made
+  // every address ship the same body and left a search engine with only the
+  // title to tell the editor, a tutorial step and an exercise apart.
+  const template = injectTrackingScript(
+    readFileSync(join(root, 'index.html'), 'utf8'),
+    options.trackingScript,
   );
 
   const routes = readRoutes(root);
+
+  // One page per address, built the first time it is asked for: the body is the
+  // same for every visitor, so it is worth keeping rather than rebuilding.
+  const pages = new Map<string, string>();
+  const pageFor = (meta: RouteMeta): string => {
+    const built = pages.get(meta.path);
+    if (built !== undefined) return built;
+    const page = injectCrawlPath(template, {
+      heading: meta.title,
+      paragraphs: [meta.description],
+    });
+    pages.set(meta.path, page);
+    return page;
+  };
 
   // `SITE_URL` carries the origin and the mount path together. A proxy that
   // puts the tool under a path strips it before the request arrives, so the
@@ -116,12 +140,15 @@ function registerFrontend(
 
   const sendIndex = (request: FastifyRequest, reply: FastifyReply) =>
     reply.type('text/html; charset=utf-8').send(
-      injectPageMeta(index, {
-        url: request.url,
-        origin: originOf(request),
-        routes,
-        basePath,
-      }),
+      injectPageMeta(
+        pageFor(pageMetaFor(stripBase(basePath, request.url), routes)),
+        {
+          url: request.url,
+          origin: originOf(request),
+          routes,
+          basePath,
+        },
+      ),
     );
 
   void fastify.register(fastifyStatic, { root, index: false });

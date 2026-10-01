@@ -8,7 +8,12 @@
  * site is which page an address opens, and the prose naming it.
  */
 
-import type { NoscriptRoute, RouteMeta, SiteId } from 'react-cheminfo/core';
+import type {
+  NoscriptRoute,
+  PageContent,
+  RouteMeta,
+  SiteId,
+} from 'react-cheminfo/core';
 import {
   PAGE_BODY_MARKER,
   PAGE_HEAD_MARKER,
@@ -53,9 +58,9 @@ const EXERCISES: RouteMeta = {
 
 const ABOUT: RouteMeta = {
   path: '/about',
-  title: 'About — what renders the formulas, and under what licence',
+  title: 'About — what renders the formulas',
   description:
-    'What tex.cheminfo.org renders your formulas with, the borrowed work it stands on, its licence, and where to report a problem.',
+    'What tex.cheminfo.org renders your formulas with, the borrowed work it stands on, and the papers to cite when it helped.',
 };
 
 /**
@@ -82,7 +87,7 @@ const NOSCRIPT_ROUTES: readonly NoscriptRoute[] = [
   {
     ...ABOUT,
     short: 'About',
-    note: 'what it is built on, and its licence',
+    note: 'what it is built on, and how to cite it',
   },
   {
     path: '/docs',
@@ -141,18 +146,24 @@ export function injectPageMeta(
 }
 
 /**
- * Write the crawl path into the page the server hands out. It is the same on
- * every address and names no origin — its links are written against the
- * `<base>` the deployment stamps in — so it is written once, when the page is
- * read, rather than per request.
+ * Write the crawl path into the page the server hands out, with the text of the
+ * address being served above it.
+ *
+ * Without that text every address ships one body — this menu, byte for byte —
+ * and a search engine handed the same text for the editor, for each tutorial
+ * step and for each exercise clusters them into one result. The links name no
+ * origin: they are written against the `<base>` the deployment stamps in.
  * @param html - The built page, carrying `<!--cheminfo:body-->`.
+ * @param content - What the page being served says for itself.
+ * @default undefined — the body is the menu alone, as it was for every address
  * @returns The page, with the index a visitor without JavaScript reads.
  */
-export function injectCrawlPath(html: string): string {
+export function injectCrawlPath(html: string, content?: PageContent): string {
   return fill(
     html,
     PAGE_BODY_MARKER,
     noscriptIndex({
+      content,
       site: SITE,
       routes: NOSCRIPT_ROUTES,
       heading: 'tex.cheminfo.org — LaTeX formulas as images',
