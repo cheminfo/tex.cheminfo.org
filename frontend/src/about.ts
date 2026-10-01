@@ -1,6 +1,6 @@
 import { BUILD_INFO } from 'react-cheminfo/build-info';
 import type { AboutContent } from 'react-cheminfo/core';
-import { PLATFORM_WORK } from 'react-cheminfo/core';
+import { PLATFORM_WORK, TEACHING_WORK } from 'react-cheminfo/core';
 
 /**
  * What this site says about itself, drawn by `AboutPage` from
@@ -27,5 +27,5 @@ export const ABOUT: AboutContent = {
   people: [{ name: 'Luc Patiny' }],
   providedBy: ['epfl'],
   credits: ['mathjax', 'blueprint', 'react-cheminfo', 'react', 'vite'],
-  cite: [PLATFORM_WORK],
+  cite: [PLATFORM_WORK, TEACHING_WORK],
 };

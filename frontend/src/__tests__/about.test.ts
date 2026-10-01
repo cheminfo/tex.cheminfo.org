@@ -1,5 +1,6 @@
 import {
   PLATFORM_WORK,
+  TEACHING_WORK,
   aboutProblems,
   resolveAbout,
 } from 'react-cheminfo/core';
@@ -34,8 +35,8 @@ test('the About credits every borrowed work the site runs on', () => {
   ).toStrictEqual(['Apache-2.0', 'Apache-2.0', 'MIT', 'MIT', 'MIT']);
 });
 
-test('the About asks for the platform paper alone', () => {
-  expect(ABOUT.cite).toStrictEqual([PLATFORM_WORK]);
+test('the About asks for the platform paper and the teaching paper', () => {
+  expect(ABOUT.cite).toStrictEqual([PLATFORM_WORK, TEACHING_WORK]);
   expect(resolveAbout(ABOUT).repository).toBe(
     'https://github.com/cheminfo/tex.cheminfo.org',
   );
